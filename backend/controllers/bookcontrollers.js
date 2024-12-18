@@ -57,6 +57,6 @@ export const deleteBook = async (req,res)=>{
     await Book.findByIdAndDelete(id);
     res.status(201).json({success:true, message: "Book Deleted"})
   } catch (error) {
-    res.status(404).json({success:false, message:"Book not found"})
+    res.status(500).json({success:false, message:"Book not found"})
   }
 }
