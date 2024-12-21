@@ -9,10 +9,10 @@ const Navbar = () => {
   </div>
   <div className="flex-none">
     <ul className="menu menu-horizontal px-1">
-      <li><a>Home</a></li>
-      <li><a>Community</a></li>
-      <li><a>Clubs</a></li>
-      <li><a>Notifications</a></li>
+      <li><Link to='/'>Home</Link></li>
+      <li><Link to='/Community'>Community</Link></li>
+      <li><Link to='/Clubs'>Clubs</Link></li>
+      <li><Link to='/Notifications'>Notifications</Link></li>
       
     </ul>
   </div>
@@ -28,9 +28,9 @@ const Navbar = () => {
         tabIndex={0}
         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
         <li>
-          <a className="justify-between">
+          <Link to='/Profile'className="justify-between">
             Profile
-          </a>
+          </Link>
         </li>
         <li><a>Settings</a></li>
         <li><a>Logout</a></li>
