@@ -6,7 +6,10 @@ import HomePage from './pages/HomePage';
 import ClubsPage from './pages/ClubsPage'
 import NotificationPage from './pages/NotificationPage'
 import ProfilePage from './pages/ProfilePage';
+
+
 function App() {
+  
   return (
     <div className='p-6'>
       <Navbar/>
