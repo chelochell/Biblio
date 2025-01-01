@@ -30,7 +30,7 @@ export const useBookStore = create((set) => ({
 		const data = await res.json();
 		if (!data.success) return { success: false, message: data.message };
 
-		// update the ui immediately, without needing a refresh
+	
 		set((state) => ({ books: state.books.filter((book) => book._id !== pid) }));
 		return { success: true, message: data.message };
 	},
@@ -45,7 +45,7 @@ export const useBookStore = create((set) => ({
 		const data = await res.json();
 		if (!data.success) return { success: false, message: data.message };
 
-		// update the ui immediately, without needing a refresh
+		
 		set((state) => ({
 			books: state.books.map((book) => (book._id === pid ? data.data : book)),
 		}));
