@@ -36,7 +36,7 @@ const ProfilePage = () => {
         image: '',
       });
     } else {
-      // You could add an error message display here
+      
       alert(message);
     }
   };
@@ -108,7 +108,7 @@ const ProfilePage = () => {
         />
         <div role="tabpanel" className="tab-content p-4">
           <h2 className="text-2xl font-bold mb-4">Reading Statistics</h2>
-          {/* Add your reading stats content here */}
+        
         </div>
 
         <input
@@ -120,19 +120,19 @@ const ProfilePage = () => {
         />
         <div role="tabpanel" className="tab-content p-4">
           <h2 className="text-2xl font-bold mb-4">Profile Settings</h2>
-          {/* Add your settings content here */}
+        
         </div>
       </div>
 
-      {/* Add Book Modal */}
+    
       <dialog id="my_modal_4" className="modal">
         <div className="modal-box w-11/12 max-w-5xl">
           <h3 className="font-bold text-lg">Add a New Book</h3>
           <p className="py-4">Keep track of your reads with a new collection.</p>
 
-          {/* Form for Adding a Book */}
+          
           <form method="dialog" className="space-y-4">
-            {/* Title Input */}
+           
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                 Title
@@ -149,7 +149,7 @@ const ProfilePage = () => {
               />
             </div>
 
-            {/* Author Input */}
+            
             <div>
               <label htmlFor="author" className="block text-sm font-medium text-gray-700">
                 Author
@@ -166,7 +166,7 @@ const ProfilePage = () => {
               />
             </div>
 
-            {/* Description Input */}
+          
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                 Description
@@ -183,7 +183,7 @@ const ProfilePage = () => {
               ></textarea>
             </div>
 
-            {/* Genre Dropdown */}
+           
             <div>
               <label htmlFor="genre" className="block text-sm font-medium text-gray-700">
                 Genre
@@ -229,7 +229,7 @@ const ProfilePage = () => {
               ></textarea>
             </div>
 
-            {/* Status Dropdown */}
+           
             <div>
               <label htmlFor="status" className="block text-sm font-medium text-gray-700">
                 Status
@@ -286,7 +286,7 @@ const ProfilePage = () => {
               </p>
             </div>
 
-            {/* Modal Actions */}
+           
             <div className="modal-action">
               <button type="button" className="btn" onClick={handleAddBook}>
                 Add Book
