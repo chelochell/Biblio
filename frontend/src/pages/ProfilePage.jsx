@@ -25,7 +25,7 @@ const ProfilePage = () => {
     
     if (success) {
       document.getElementById("my_modal_4").close();
-      // Reset the form
+      
       setNewBook({
         title: '',
         author: '',
@@ -35,15 +35,16 @@ const ProfilePage = () => {
         status: '',
         image: '',
       });
-    } else {
-      
+    } else { 
       alert(message);
     }
   };
 
+  
+
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Profile Header */}
+ 
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold mb-2">Fretchel Gerarman</h1>
         <p className="text-gray-600">Book Collection</p>
@@ -85,7 +86,7 @@ const ProfilePage = () => {
                     }}
                   />
                 </figure>
-                <div className="card-body">
+                <div className="card-body ">
                   <h2 className="card-title">{book.title}</h2>
                   <p className="text-sm text-gray-600">by {book.author}</p>
                   <p className="text-sm">{book.description}</p>
