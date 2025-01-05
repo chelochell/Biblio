@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import search from "../images/search-icon.svg";
 import bg_banner from "../images/bg_banner.svg";
 import { useBookStore } from "../store/book";
-import trendingBook from "../images/Trending Book 1.jpg"
+import trendingBook from "../images/Trending Book 1.jpg";
+import trendingBook2 from "../images/TrendingBook2.jpg";
+import recommendedBook from "../images/readmorebooks.svg";
+import curve from "../images/curve.svg";
+import discoverBook from "../images/discoverBook.svg";
+import bookCover1 from "../images/BookClubCover1.jpg"
 const HomePage = () => {
   const { books, fetchBook } = useBookStore();
 
@@ -126,20 +131,116 @@ const HomePage = () => {
 
         <div>
           <div className="flex flex-col md:flex-row pt-5 m-10 ">
-          <div className=" flex-grow pr-8">
-            <h2 className="text-text-color font-lexend mb-2">by: Lee Geum-yi</h2>
-            <h2 className="text-2xl font-normal text-gray-800 mb-3">Can’t I Go Instead</h2>
-            <p className="text-text-color font-lexend font-light ">a deeply moving and poignant tale that explores the boundless 
-            depths of love, sacrifice, and resilience.</p>
+            <div className=" flex-grow pr-8">
+              <h2 className="text-text-color font-lexend mb-2">
+                by Lee Geum-yi
+              </h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                Can’t I Go Instead
+              </h2>
+              <p className="text-text-color font-lexend font-light ">
+                a deeply moving and poignant tale that explores the boundless
+                depths of love, sacrifice, and resilience.
+              </p>
+            </div>
+            <div className="w-32 flex-shrink-0 ">
+              <img
+                src={trendingBook}
+                alt="Book 1"
+                className="w-full h-40 object-cover rounded-xl"
+              />
+            </div>
           </div>
-          <div className="w-32 flex-shrink-0 ">
-            <img src={trendingBook} alt="Book 1" className="w-full h-40 object-cover rounded-xl"/>
+          <hr className="border-gray-200 border-1 w-full h-1" />
+
+          <div className="flex flex-col md:flex-row pt-5 m-10 ">
+            <div className=" flex-grow pr-8">
+              <h2 className="text-text-color font-lexend mb-2">by E.J. Koh</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                The Magical Language of Others
+              </h2>
+              <p className="text-text-color font-lexend font-light ">
+                aIt's a powerful memoir that delves into themes of family, love,
+                loss, and the struggles of bridging cultural and generational
+                divides.
+              </p>
+            </div>
+            <div className="w-32 flex-shrink-0 ">
+              <img
+                src={trendingBook2}
+                alt="Book 1"
+                className="w-full h-40 object-cover rounded-xl"
+              />
+            </div>
           </div>
-         
-          </div>
-          <hr className="border-gray-200 border-1 w-full h-1"/>
-          
         </div>
+      </div>
+
+      <div className="px-4 py-16 mx-12 mt-16">
+        <h1 className="text-2xl font-medium text-gray-800 mb-4">
+          Recommended for You
+        </h1>
+        <p className="text-gray-600 mb-8">
+          Discover what everyone’s been talking about and find your next great
+          read today.
+        </p>
+        <div className="bg-gradient-to-r from-[#FFDECF] via-yellow-200 to-[#C79645] h-auto w-full rounded-lg">
+          <div className="flex flex-row items-center">
+            <div>
+              <img
+                src={recommendedBook}
+                alt="recommendedBook"
+                className="object-cover rounded-xl pl-20 my-20"
+              />
+            </div>
+            <div className="flex-1 ml-16">
+             
+              {/* Increased margin-left */}
+              <div className="mb-6">
+                
+                {/* Added more space between the curve and heading */}
+                <img src={curve} alt="curve" className="mb-4" />{" "}
+               
+                <h1 className="text-2xl font-bold text-gray-800 mb-4">
+                  2024 Best Selling Books
+                </h1>
+              </div>
+              <p className="text-text-color font-lexend font-light text-xl">
+                Treasures that captured hearts and minds this year!
+              </p>
+              <div className="bg-[#F0F3EB] rounded-lg p-4 flex mt-5 w-auto mr-10">
+                <img src={discoverBook} alt="discover book" />
+                <div className="flex flex-col pl-6">
+                  <h5 className="text-gray-800 font-lexend font-bold">
+                    Discover gripping tales
+                  </h5>
+                  <p className="text-text-color font-lexend font-light">
+                    Lose yourself in heartwarming stories of love, passion, and
+                    connection.
+                  </p>
+                </div>
+              </div>
+              <button
+                className=" mt-6 flex items-center justify-center px-8 py-4 text-white text-xl font-semibold bg-gradient-to-r from-[#7FC24A] to-[#8D77AB] rounded-full">
+                <span>Explore All Best Sellers →</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div className="px-4 py-16 mx-12 mt-16">
+      
+          <h1 className="text-2xl font-lexend text-text-color font-bold">Book Clubs</h1>
+
+          <div>
+            <img src={bookCover1} alt="book cover" className="w-full h-auto object-cover rounded-lg"/>
+          </div>
+       
+       <div>
+
+       </div>
       </div>
     </div>
   );
