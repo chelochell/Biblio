@@ -11,7 +11,7 @@ import ProfilePage from './pages/ProfilePage';
 function App() {
   
   return (
-    <div className='p-6'>
+    <div className=''>
       <Navbar/>
       <Routes>
         <Route path="/" element={<HomePage />} />
