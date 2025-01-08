@@ -195,11 +195,11 @@ const HomePage = () => {
             </div>
             <div className="flex-1 ml-16">
              
-              {/* Increased margin-left */}
+            
               <div className="mb-6">
                 
-                {/* Added more space between the curve and heading */}
-                <img src={curve} alt="curve" className="mb-4" />{" "}
+               
+                <img src={curve} alt="curve" className="mb-4" />
                
                 <h1 className="text-2xl font-bold text-gray-800 mb-4">
                   2024 Best Selling Books
@@ -235,7 +235,7 @@ const HomePage = () => {
           <h1 className="text-2xl font-lexend text-text-color font-bold">Book Clubs</h1>
 
           <div>
-            <img src={bookCover1} alt="book cover" className="w-full h-auto object-cover rounded-lg"/>
+            <img src={bookCover1} alt="book cover" className="w-30 h-30 object-cover rounded-lg"/>
           </div>
        
        <div>

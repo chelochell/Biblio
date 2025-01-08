@@ -14,7 +14,7 @@ export const getBook = async (req,res) =>{
 export const createBook = async (req, res) => {
   const book = req.body;
   
-  // Updated validation to match schema requirements
+  
   if (!book.title || !book.author || !book.description || !book.genre || !book.image) {
       return res.status(400).json({ 
           success: false, 
