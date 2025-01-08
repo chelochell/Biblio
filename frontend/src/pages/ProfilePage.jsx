@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useBookStore } from "../store/book";
+import axios from "axios";
 
 const ProfilePage = () => {
+  const modalRef = useRef(null);
   const [newBook, setNewBook] = useState({
-    title: '',
-    author: '',
-    description: '',
-    genre: '',
-    reviews: '',
-    status: '',
-    image: '',
+    title: "",
+    author: "",
+    description: "",
+    genre: "",
+    reviews: "",
+    status: "",
+    image: null,
+    imagePreview: null
   });
 
   const { createBook, books, fetchBook } = useBookStore();
@@ -18,39 +21,109 @@ const ProfilePage = () => {
     fetchBook();
   }, [fetchBook]);
 
-  const handleAddBook = async () => {
-    const { success, message } = await createBook(newBook);
-    console.log("Success:", success);
-    console.log("Message:", message);
-    
-    if (success) {
-      document.getElementById("my_modal_4").close();
-      
-      setNewBook({
-        title: '',
-        author: '',
-        description: '',
-        genre: '',
-        reviews: '',
-        status: '',
-        image: '',
-      });
-    } else { 
-      alert(message);
+  const resetForm = () => {
+    setNewBook({
+      title: "",
+      author: "",
+      description: "",
+      genre: "",
+      reviews: "",
+      status: "",
+      image: null,
+      imagePreview: null
+    });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewBook(prev => ({
+        ...prev,
+        image: file,
+        imagePreview: URL.createObjectURL(file)
+      }));
     }
   };
 
-  
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewBook(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAddBook = async (e) => {
+    e.preventDefault();
+    
+    if (!newBook.image) {
+      alert("Please select a book cover image");
+      return;
+    }
+
+    // First, upload the image
+    const formData = new FormData();
+    formData.append("file", newBook.image);
+
+    try {
+      // Upload the image first
+      const uploadRes = await axios.post("http://localhost:5000/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (!uploadRes.data.success) {
+        alert("Failed to upload image: " + uploadRes.data.message);
+        return;
+      }
+
+      // Log the upload response to debug
+      console.log("Upload response:", uploadRes.data);
+
+      // Get the image URL from the response
+      const imageUrl = uploadRes.data.fileUrl;
+      if (!imageUrl) {
+        console.error('Upload response:', uploadRes.data);
+        alert("Failed to get image URL from upload response");
+        return;
+      }
+
+      // Prepare the book data with the uploaded image URL
+      const bookData = {
+        title: newBook.title,
+        author: newBook.author,
+        description: newBook.description,
+        genre: newBook.genre,
+        reviews: newBook.reviews,
+        status: newBook.status,
+        image: imageUrl
+      };
+
+      // Create the book with the image URL
+      const { success, message } = await createBook(bookData);
+      
+      if (success) {
+        modalRef.current?.close();
+        resetForm();
+        alert("Book added successfully!");
+        await fetchBook(); // Refresh the book list
+      } else {
+        alert(message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while adding the book.");
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
- 
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold mb-2">Fretchel Gerarman</h1>
         <p className="text-gray-600">Book Collection</p>
       </div>
 
-      {/* Tabs Navigation */}
       <div role="tablist" className="tabs tabs-bordered mb-6">
         <input
           type="radio"
@@ -61,32 +134,26 @@ const ProfilePage = () => {
           defaultChecked
         />
         <div role="tabpanel" className="tab-content p-4">
-          {/* Add Book Button */}
           <div className="flex justify-end mb-4">
             <button
               className="btn btn-primary"
-              onClick={() => document.getElementById("my_modal_4").showModal()}
+              onClick={() => modalRef.current?.showModal()}
             >
               Add New Book
             </button>
           </div>
 
-          {/* Books Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {books.map((book) => (
               <div key={book._id} className="card bg-base-100 shadow-xl">
                 <figure className="px-4 pt-4">
                   <img
-                    src={book.image}
+                    src={book.image || "/placeholder-book.png"}
                     alt={book.title}
                     className="rounded-xl h-48 w-full object-cover"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '/placeholder-book.png';
-                    }}
                   />
                 </figure>
-                <div className="card-body ">
+                <div className="card-body">
                   <h2 className="card-title">{book.title}</h2>
                   <p className="text-sm text-gray-600">by {book.author}</p>
                   <p className="text-sm">{book.description}</p>
@@ -109,7 +176,7 @@ const ProfilePage = () => {
         />
         <div role="tabpanel" className="tab-content p-4">
           <h2 className="text-2xl font-bold mb-4">Reading Statistics</h2>
-        
+          {/* Add your reading statistics content here */}
         </div>
 
         <input
@@ -121,21 +188,21 @@ const ProfilePage = () => {
         />
         <div role="tabpanel" className="tab-content p-4">
           <h2 className="text-2xl font-bold mb-4">Profile Settings</h2>
-        
+          {/* Add your settings content here */}
         </div>
       </div>
 
-    
-      <dialog id="my_modal_4" className="modal">
+      <dialog ref={modalRef} className="modal">
         <div className="modal-box w-11/12 max-w-5xl">
           <h3 className="font-bold text-lg">Add a New Book</h3>
           <p className="py-4">Keep track of your reads with a new collection.</p>
 
-          
-          <form method="dialog" className="space-y-4">
-           
+          <form onSubmit={handleAddBook} className="space-y-4">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Title
               </label>
               <input
@@ -143,16 +210,18 @@ const ProfilePage = () => {
                 id="title"
                 name="title"
                 value={newBook.title}
+                onChange={handleInputChange}
                 placeholder="Enter the book title"
                 className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
                 required
               />
             </div>
 
-            
             <div>
-              <label htmlFor="author" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="author"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Author
               </label>
               <input
@@ -160,41 +229,45 @@ const ProfilePage = () => {
                 id="author"
                 name="author"
                 value={newBook.author}
+                onChange={handleInputChange}
                 placeholder="Enter the author's name"
                 className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}
                 required
               />
             </div>
 
-          
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Description
               </label>
               <textarea
                 id="description"
                 name="description"
                 value={newBook.description}
+                onChange={handleInputChange}
                 rows="4"
                 placeholder="Write a brief description of the book"
                 className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                onChange={(e) => setNewBook({ ...newBook, description: e.target.value })}
                 required
-              ></textarea>
+              />
             </div>
 
-           
             <div>
-              <label htmlFor="genre" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="genre"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Genre
               </label>
               <select
                 id="genre"
                 name="genre"
                 value={newBook.genre}
+                onChange={handleInputChange}
                 className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                onChange={(e) => setNewBook({ ...newBook, genre: e.target.value })}
                 required
               >
                 <option value="">Select a genre</option>
@@ -213,34 +286,38 @@ const ProfilePage = () => {
               </select>
             </div>
 
-            {/* Reviews Input */}
             <div>
-              <label htmlFor="reviews" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="reviews"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Reviews
               </label>
               <textarea
                 id="reviews"
                 name="reviews"
                 value={newBook.reviews}
+                onChange={handleInputChange}
                 rows="4"
                 placeholder="Write your review or feedback"
                 className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                onChange={(e) => setNewBook({ ...newBook, reviews: e.target.value })}
                 required
-              ></textarea>
+              />
             </div>
 
-           
             <div>
-              <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="status"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Status
               </label>
               <select
                 id="status"
                 name="status"
                 value={newBook.status}
+                onChange={handleInputChange}
                 className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                onChange={(e) => setNewBook({ ...newBook, status: e.target.value })}
                 required
               >
                 <option value="">Select a status</option>
@@ -252,48 +329,51 @@ const ProfilePage = () => {
               </select>
             </div>
 
-            {/* Image Upload */}
             <div>
-              <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-                Book Cover URL
+              <label
+                htmlFor="image"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Book Cover Image
               </label>
               <div className="mt-1 flex items-center space-x-2">
                 <input
-                  type="url"
+                  type="file"
                   id="image"
                   name="image"
-                  value={newBook.image}
-                  placeholder="Enter image URL (e.g., https://example.com/book-cover.jpg)"
+                  accept="image/*"
+                  onChange={handleImageChange}
                   className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  onChange={(e) => setNewBook({ ...newBook, image: e.target.value })}
                   required
                 />
-                {newBook.image && (
+                {newBook.imagePreview && (
                   <div className="relative h-12 w-12">
                     <img
-                      src={newBook.image}
+                      src={newBook.imagePreview}
                       alt="Book cover preview"
                       className="h-full w-full rounded object-cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/placeholder-book.png';
-                      }}
                     />
                   </div>
                 )}
               </div>
               <p className="mt-1 text-sm text-gray-500">
-                Please provide a valid image URL for the book cover
+                Please upload an image for the book cover
               </p>
             </div>
 
-           
             <div className="modal-action">
-              <button type="button" className="btn" onClick={handleAddBook}>
+              <button type="submit" className="btn btn-primary">
                 Add Book
               </button>
-              <button type="submit" className="btn btn-primary">
-                Close
+              <button
+                type="button"
+                className="btn"
+                onClick={() => {
+                  modalRef.current?.close();
+                  resetForm();
+                }}
+              >
+                Cancel
               </button>
             </div>
           </form>
