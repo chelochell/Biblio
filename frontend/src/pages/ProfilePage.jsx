@@ -61,12 +61,12 @@ const ProfilePage = () => {
       return;
     }
 
-    // First, upload the image
+    
     const formData = new FormData();
     formData.append("file", newBook.image);
 
     try {
-      // Upload the image first
+      
       const uploadRes = await axios.post("http://localhost:5000/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -78,10 +78,10 @@ const ProfilePage = () => {
         return;
       }
 
-      // Log the upload response to debug
+      
       console.log("Upload response:", uploadRes.data);
 
-      // Get the image URL from the response
+      
       const imageUrl = uploadRes.data.fileUrl;
       if (!imageUrl) {
         console.error('Upload response:', uploadRes.data);
@@ -89,7 +89,7 @@ const ProfilePage = () => {
         return;
       }
 
-      // Prepare the book data with the uploaded image URL
+      
       const bookData = {
         title: newBook.title,
         author: newBook.author,

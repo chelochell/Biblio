@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
 import bookRouters from "./routes/bookroutes.js";
 import uploadRoutes from "./routes/uploadroutes.js";
+import clubRouter from "./routes/clubroutes.js"
+import authRoutes from "./routes/auth.routes.js"
 import multer from "multer";
 import path from 'path';
 import cors from 'cors';
@@ -75,7 +77,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
 
 app.use("/api/books", bookRouters);
 app.use("/api/uploads", uploadRoutes);
-
+app.use("/api/clubs", clubRouter);
+app.use("/api/auth", authRoutes)
 app.listen(PORT, () => {
   connectDB();
   console.log("Server started at http://localhost:" + PORT);
