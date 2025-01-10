@@ -100,14 +100,14 @@ const ProfilePage = () => {
         image: imageUrl
       };
 
-      // Create the book with the image URL
+      
       const { success, message } = await createBook(bookData);
       
       if (success) {
         modalRef.current?.close();
         resetForm();
         alert("Book added successfully!");
-        await fetchBook(); // Refresh the book list
+        await fetchBook(); 
       } else {
         alert(message);
       }
