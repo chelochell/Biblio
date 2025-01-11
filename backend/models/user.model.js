@@ -22,16 +22,18 @@ const UserSchema = new mongoose.Schema({
         ref: "Post",
       },
     ],
-    lastLogin:{
-      type:Date,
-      default:Date.now,
-      isVerified:false
+    lastLogin: {
+      type: Date,
+      default: Date.now
     },
-    resetPasswordToken:String,
-    resetPasswordExpiresAt:Date,
-    verificationToken:String,
-    verificationTokenExpiresAt:Date,
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
+    resetPasswordToken: String,
+    resetPasswordExpiresAt: Date,
+    verificationToken: String,
+    verificationTokenExpiresAt: Date,
+}, { timestamps: true });
 
-  }, { timestamps: true });
-
-  export const User = mongoose.model("User", UserSchema);
+export const User = mongoose.model("User", UserSchema);
