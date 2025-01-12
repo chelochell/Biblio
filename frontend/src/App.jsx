@@ -6,19 +6,49 @@ import HomePage from './pages/HomePage';
 import ClubsPage from './pages/ClubsPage'
 import NotificationPage from './pages/NotificationPage'
 import ProfilePage from './pages/ProfilePage';
-
+import LoginPage from './pages/authPage/LoginPage';
+import SignupPage from './pages/authPage/SignupPage';
 
 function App() {
-  
   return (
     <div className=''>
-      <Navbar/>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path='/Community' element={<CommunityPage/>} />
-        <Route path='/Clubs' element={<ClubsPage/>} />
-        <Route path='/Notifications' element={<NotificationPage/>} />
-        <Route path='/Profile' element={<ProfilePage/>} />
+       
+        <Route path='/auth/login' element={<LoginPage/>} />
+        <Route path='/auth/signup' element={<SignupPage/>} />
+        <Route path='/auth/forgot-password' element={<ForgotPassword/>} />
+        
+       
+        <Route path="/" element={
+          <>
+            <Navbar />
+            <HomePage />
+          </>
+        } />
+        <Route path='/Community' element={
+          <>
+            <Navbar />
+            <CommunityPage/>
+          </>
+        } />
+        <Route path='/Clubs' element={
+          <>
+            <Navbar />
+            <ClubsPage/>
+          </>
+        } />
+        <Route path='/Notifications' element={
+          <>
+            <Navbar />
+            <NotificationPage/>
+          </>
+        } />
+        <Route path='/Profile' element={
+          <>
+            <Navbar />
+            <ProfilePage/>
+          </>
+        } />
       </Routes>
     </div>
   );
