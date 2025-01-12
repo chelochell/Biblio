@@ -42,6 +42,7 @@ const LoginPage = () => {
             placeholder="Enter your password"
           />
           <p>forgot password?</p>
+          <button>Login</button>
         </div>
 
 
