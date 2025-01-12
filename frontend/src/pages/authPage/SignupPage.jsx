@@ -22,7 +22,7 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Basic validation
+   
     if (!formData.username || !formData.email || !formData.password) {
       setError('Please fill in all fields.');
       return;
@@ -32,7 +32,7 @@ const Signup = () => {
       return;
     }
 
-    // Simulate successful submission
+    
     setError('');
     setSuccess('Signup successful!');
     console.log('User registered:', formData);
