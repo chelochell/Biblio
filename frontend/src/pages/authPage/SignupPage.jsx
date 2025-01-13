@@ -39,7 +39,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
@@ -111,7 +111,7 @@ const Signup = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
+          className="w-full bg-violet-500 text-white p-2 rounded hover:bg-violet-600 transition"
         >
           Sign Up
         </button>
