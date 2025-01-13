@@ -1,53 +1,37 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useBeforeUnload, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore";
+
 const Signup = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
+  const {signup} = useAuthStore();
+  
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-   
-    if (!formData.username || !formData.email || !formData.password) {
-      setError('Please fill in all fields.');
-      return;
+    try {
+      await signup(email,password, username);
+      navigate("/verify-email");
+    } catch (error) {
+      console.log(error);
     }
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-
-    
-    setError('');
-    setSuccess('Signup successful!');
-    console.log('User registered:', formData);
-  };
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSignup}
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
       >
         <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {success && <p className="text-green-500 mb-4">{success}</p>}
+      
 
         <div className="mb-4">
           <label htmlFor="username" className="block font-medium">
@@ -57,8 +41,8 @@ const Signup = () => {
             type="text"
             id="username"
             name="username"
-            value={formData.username}
-            onChange={handleChange}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mt-1"
             placeholder="Enter your username"
           />
@@ -72,8 +56,8 @@ const Signup = () => {
             type="email"
             id="email"
             name="email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mt-1"
             placeholder="Enter your email"
           />
@@ -87,8 +71,8 @@ const Signup = () => {
             type="password"
             id="password"
             name="password"
-            value={formData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mt-1"
             placeholder="Enter your password"
           />
@@ -102,8 +86,8 @@ const Signup = () => {
             type="password"
             id="confirmPassword"
             name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mt-1"
             placeholder="Confirm your password"
           />
@@ -115,15 +99,16 @@ const Signup = () => {
         >
           Sign Up
         </button>
-        <div className='mb-4'>
-        <p>Already have an account?</p>{""}
-        <Link to='/auth/login' className='text-blue-500 font-bold'>Login</Link>
-      </div>
+        <div className="mb-4">
+          <p>Already have an account?</p>
+          {""}
+          <Link to="/auth/login" className="text-blue-500 font-bold">
+            Login
+          </Link>
+        </div>
       </form>
-
-      
     </div>
   );
-}
+};
 
 export default Signup;
