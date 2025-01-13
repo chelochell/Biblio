@@ -41,11 +41,17 @@ const LoginPage = () => {
             className="w-full p-2 border border-gray-300 rounded mt-1"
             placeholder="Enter your password"
           />
-          <p>forgot password?</p>
-          <button>log</button>
+          
         </div>
-        //test
-     
+
+        <Link to='/forgotpassword'>
+          <p>forgot password?</p>
+          </Link>
+          <button type='submit' className=' flex bg-blue-500 text-white p-2 rounded-md justify-center items-center w-full mt-2'>login</button>
+          <div>
+            <p>Don't have an account? <Link to='/auth/signup'>Signup</Link></p>
+          </div>
+      
 
       </form>
     </div>

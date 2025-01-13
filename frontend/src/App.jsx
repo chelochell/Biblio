@@ -8,7 +8,8 @@ import NotificationPage from './pages/NotificationPage'
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/authPage/LoginPage';
 import SignupPage from './pages/authPage/SignupPage';
-
+import ForgotPassword from './pages/authPage/ForgotPassword';
+import VerifyEmail from './pages/authPage/VerifyEmail';
 function App() {
   return (
     <div className=''>
@@ -17,6 +18,7 @@ function App() {
         <Route path='/auth/login' element={<LoginPage/>} />
         <Route path='/auth/signup' element={<SignupPage/>} />
         <Route path='/auth/forgot-password' element={<ForgotPassword/>} />
+        <Route path='/auth/verify-email' element={<VerifyEmail/>} />
         
        
         <Route path="/" element={
