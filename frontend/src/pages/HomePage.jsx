@@ -7,7 +7,9 @@ import trendingBook2 from "../images/TrendingBook2.jpg";
 import recommendedBook from "../images/readmorebooks.svg";
 import curve from "../images/curve.svg";
 import discoverBook from "../images/discoverBook.svg";
-import bookCover1 from "../images/BookClubCover1.jpg"
+import bookCover1 from "../images/BookClubCover1.jpg";
+import Navbar from "../components/Navbar";
+
 const HomePage = () => {
   const { books, fetchBook } = useBookStore();
 
@@ -32,6 +34,7 @@ const HomePage = () => {
 
   return (
     <div>
+      <Navbar />
       <div className="w-full h-screen">
         <img
           src={bg_banner}
@@ -194,13 +197,9 @@ const HomePage = () => {
               />
             </div>
             <div className="flex-1 ml-16">
-             
-            
               <div className="mb-6">
-                
-               
                 <img src={curve} alt="curve" className="mb-4" />
-               
+
                 <h1 className="text-2xl font-bold text-gray-800 mb-4">
                   2024 Best Selling Books
                 </h1>
@@ -220,8 +219,7 @@ const HomePage = () => {
                   </p>
                 </div>
               </div>
-              <button
-                className=" mt-6 flex items-center justify-center px-8 py-4 text-white text-xl font-semibold bg-gradient-to-r from-[#7FC24A] to-[#8D77AB] rounded-full">
+              <button className=" mt-6 flex items-center justify-center px-8 py-4 text-white text-xl font-semibold bg-gradient-to-r from-[#7FC24A] to-[#8D77AB] rounded-full">
                 <span>Explore All Best Sellers →</span>
               </button>
             </div>
@@ -229,18 +227,20 @@ const HomePage = () => {
         </div>
       </div>
 
-
       <div className="px-4 py-16 mx-12 mt-16">
-      
-          <h1 className="text-2xl font-lexend text-text-color font-bold">Book Clubs</h1>
+        <h1 className="text-2xl font-lexend text-text-color font-bold">
+          Book Clubs
+        </h1>
 
-          <div>
-            <img src={bookCover1} alt="book cover" className="w-30 h-30 object-cover rounded-lg"/>
-          </div>
-       
-       <div>
+        <div>
+          <img
+            src={bookCover1}
+            alt="book cover"
+            className="w-30 h-30 object-cover rounded-lg"
+          />
+        </div>
 
-       </div>
+        <div></div>
       </div>
     </div>
   );
