@@ -13,6 +13,7 @@ import VerifyEmail from "./pages/authPage/VerifyEmail";
 import { useAuthStore } from "./store/authStore";
 import { Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -39,6 +40,10 @@ function App() {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  if (isCheckingAuth) {
+    return <LoadingSpinner />;
+  }
 
   console.log("isAuthenticated", isAuthenticated);
   console.log(user);
@@ -69,9 +74,15 @@ function App() {
           path="/*"
           element={
             <>
-              <Navbar />
               <Routes>
-                <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <HomePage />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="/Community" element={<CommunityPage />} />
                 <Route path="/Clubs" element={<ClubsPage />} />
                 <Route path="/Notifications" element={<NotificationPage />} />
