@@ -14,7 +14,9 @@ const LoginPage = () => {
   };
   return (
     <div className="flex flex-col h-screen justify-center items-center">
-      <h2>Login</h2>
+      <div className="w-full max-w-sm border border-red-300 p-12 rounded-lg">
+      <h2 className="text-2xl font-bold mb-2 justify-center items-end flex">Login</h2>
+      <p className="text-sm text-gray-500 mb-6 justify-center items-end flex">Dive Into Stories, Join Fellow Book Enthusiasts</p>
       <form action="" onSubmit={handleLogin}>
         <div className="mb-4">
           <label htmlFor="email" className="block font-medium">
@@ -26,7 +28,7 @@ const LoginPage = () => {
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mt-1"
+            className="w-full p-2 border border-gray-300 mt-1 rounded-lg"
             placeholder="Enter your email"
           />
         </div>
@@ -41,7 +43,7 @@ const LoginPage = () => {
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mt-1"
+            className="w-full p-2 border border-gray-300 rounded-lg mt-1"
             placeholder="Enter your password"
           />
         </div>
@@ -52,10 +54,10 @@ const LoginPage = () => {
         {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
-          className="flex bg-blue-500 text-white p-2 rounded-md justify-center items-center w-full mt-2"
+          className="flex border-b-orange-400 bg-red-300 text-white p-2 rounded-md justify-center items-center w-full mt-2"
           disabled={isLoading}
         >
-          {isLoading ? <LoadingSpinner className='w-6 h-6 animate-spin  mx-auto'/> : "login"}
+          {isLoading ? <span className="loading loading-ring loading-sm"></span> : "login"}
         </button>
         <div>
           <p>
@@ -63,6 +65,8 @@ const LoginPage = () => {
           </p>
         </div>
       </form>
+      </div>
+     
     </div>
   );
 };
