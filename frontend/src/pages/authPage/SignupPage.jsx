@@ -17,7 +17,7 @@ const Signup = () => {
 
     try {
       await signup(email,password, username);
-      navigate("/verify-email");
+      navigate("/auth/verify-email");
     } catch (error) {
       console.log(error);
     }
