@@ -1,11 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useAuthStore } from "../../store/authStore";
 
 const VerifyEmail = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRef = useRef([]);
   const navigate = useNavigate();
+ 
   
+
+  const {error, isLoading,verifyEmail} = useAuthStore();
 
   const handleChange = (index, value) => {
     // Only allow numbers
@@ -44,11 +49,17 @@ const VerifyEmail = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(code);
     const verificationCode = code.join('');
-    console.log(`Verification code: ${verificationCode}`);
+   try {
+    await verifyEmail(verificationCode);
+    navigate("/");
+    toast.success("Email verified successfully");
+   } catch (error) {
+    console.log(error);
+   }
   };
 
   useEffect(() => {
@@ -83,7 +94,7 @@ const VerifyEmail = () => {
                 />
               ))}
             </div>
-
+            {error && <p className="text-red-500 text-center">{error}</p>}
             <button className="bg-indigo-500 text-white p-3 rounded-lg w-full hover:bg-indigo-600 transition transform hover:scale-105">
               Verify Email
             </button>
