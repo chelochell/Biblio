@@ -122,7 +122,3 @@ ehthumbs.db
 # Linux trash folder which might appear on any partition or disk
 .Trash-*
 
-# End Generation Here
-=======
-.env
->>>>>>> fa2302b37d8b2b9e6c06b4afc339575a8cdd6da8
