@@ -1,6 +1,6 @@
-# Project Title
+# Biblio - Virtual Library Management System
 
-A brief description of what this project does and who it's for.
+A modern web application for managing a virtual library, allowing users to browse, borrow, and manage digital books.
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ A brief description of what this project does and who it's for.
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/your_username/repo_name.git
+   git clone https://github.com/your_username/biblio.git
    ```
 2. Install NPM packages
    ```sh
@@ -44,7 +44,7 @@ A brief description of what this project does and who it's for.
 
 The following environment variables are used in this project:
 
-- `MONGO_URL`: The URL for connecting to MongoDB.
+- `MONGO_URL`: The URL for connecting to MongoDB database.
 - `PORT`: The port on which the server will run.
 - `JWT_SECRET`: The secret key for JWT authentication.
 - `NODE_ENV`: The environment in which the application is running (e.g., development, production).
@@ -61,9 +61,18 @@ The following environment variables are used in this project:
 
 ### Books
 
-- `GET /api/books`: Get all books.
-- `POST /api/books`: Create a new book.
-- `PUT /api/books/:id`: Update a book by ID.
+- `GET /api/books`: Get all available books.
+- `GET /api/books/:id`: Get book details by ID.
+- `POST /api/books`: Add a new book (Admin only).
+- `PUT /api/books/:id`: Update book details (Admin only).
+- `DELETE /api/books/:id`: Remove a book (Admin only).
+
+### Clubs
+
+- `GET /api/clubs`: Get all clubs.
+- `POST /api/clubs`: Create a new club.
+- `PUT /api/clubs/:clubId`: Update club details.
+- `GET /api/clubs/:clubId`: Get club details by ID.
 
 ## Contributing
 
