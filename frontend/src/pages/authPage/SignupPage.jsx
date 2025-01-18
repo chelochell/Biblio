@@ -8,7 +8,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-  const { signup } = useAuthStore();
+  const { signup, error ,isLoading } = useAuthStore();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -90,7 +90,7 @@ const Signup = () => {
             type="submit"
             className="flex border-b-orange-400 bg-red-300 text-white p-2 rounded-md justify-center items-center w-full mt-2"
           >
-            Sign Up
+            {isLoading ? <span className="loading loading-ring loading-sm"></span> : "Sign Up"}
           </button>
           <div className="mb-4">
             <p>Already have an account? <Link to="/auth/login" className=" font-bold">
