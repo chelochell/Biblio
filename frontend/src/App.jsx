@@ -8,8 +8,9 @@ import NotificationPage from "./pages/NotificationPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/authPage/LoginPage";
 import SignupPage from "./pages/authPage/SignupPage";
-import ForgotPassword from "./pages/authPage/ForgotPassword";
+import ForgotPasswordPage from "./pages/authPage/ForgotPasswordPage";
 import VerifyEmail from "./pages/authPage/VerifyEmail";
+import ResetPassword from "./pages/authPage/ResetPassword";
 import { useAuthStore } from "./store/authStore";
 import { Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
@@ -67,8 +68,16 @@ function App() {
             </RedirectAuthenticatedUser>
           }
         />
-        <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+        <Route path="/auth/forgot-password" element={<RedirectAuthenticatedUser><ForgotPasswordPage /></RedirectAuthenticatedUser>} />
         <Route path="/auth/verify-email" element={<VerifyEmail />} />
+        <Route
+					path='/reset-password/:token'
+					element={
+						<RedirectAuthenticatedUser>
+							<ResetPassword />
+						</RedirectAuthenticatedUser>
+					}
+				/>
 
         <Route
           path="/*"

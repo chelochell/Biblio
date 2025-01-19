@@ -48,7 +48,7 @@ const LoginPage = () => {
           />
         </div>
 
-        <Link to="/forgotpassword">
+        <Link to="/auth/forgot-password">
           <p>forgot password?</p>
         </Link>
         {error && <p className="text-red-500">{error}</p>}
