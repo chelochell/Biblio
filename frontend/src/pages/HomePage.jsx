@@ -179,7 +179,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="px-4 py-16 mx-12 mt-16">
+      {/* <div className="px-4 py-16 mx-12 mt-16">
         <h1 className="text-2xl font-medium text-gray-800 mb-4">
           Recommended for You
         </h1>
@@ -225,7 +225,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="px-4 py-16 mx-12 mt-16">
         <h1 className="text-2xl font-lexend text-text-color font-bold">

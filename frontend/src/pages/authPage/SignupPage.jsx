@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useBeforeUnload, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
-
+import logo from "../../images/logo.svg";
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -23,11 +23,13 @@ const Signup = () => {
 
   return (
     <div className="flex flex-col h-screen justify-center items-center">
-      <div className="w-full max-w-sm border border-red-300 p-12 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+       <img src={logo} alt="logo" className="h-7 mb-10 self-start ml-12" />
+      <div className="w-full max-w-sm border border-[#DED7D7] p-12 rounded-lg">
+        <h2 className="text-2xl font-bold mb-4 text-center font-cormorant-garamond ">Sign Up</h2>
+        <p className="text-sm text-gray-500 mb-8 text-center font-urbanist">Join our community! Create an account to start exploring and saving your favorite books.</p>
         <form onSubmit={handleSignup}>
-          <div className="mb-4">
-            <label htmlFor="username" className="block font-medium">
+          <div className="mb-4 ">
+            <label htmlFor="username" className="block font-medium text-xs font-urbanist mb-3">
               Username
             </label>
             <input
@@ -36,13 +38,13 @@ const Signup = () => {
               name="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mt-1"
+              className="input input-bordered w-full max-w-sm font-urbanist text-sm bg-[#FBFAE9]"
               placeholder="Enter your username"
             />
           </div>
 
           <div className="mb-4">
-            <label htmlFor="email" className="block font-medium">
+            <label htmlFor="email" className="block font-medium font-urbanist text-xs mb-3">
               Email
             </label>
             <input
@@ -51,13 +53,13 @@ const Signup = () => {
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mt-1"
+              className="input input-bordered w-full max-w-sm font-urbanist text-sm bg-[#FBFAE9]"
               placeholder="Enter your email"
             />
           </div>
 
           <div className="mb-4">
-            <label htmlFor="password" className="block font-medium">
+            <label htmlFor="password" className="block font-medium font-urbanist text-xs mb-3">
               Password
             </label>
             <input
@@ -66,13 +68,13 @@ const Signup = () => {
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mt-1"
+              className="input input-bordered w-full max-w-sm text-sm bg-[#FBFAE9] "
               placeholder="Enter your password"
             />
           </div>
 
           <div className="mb-4">
-            <label htmlFor="confirmPassword" className="block font-medium">
+            <label htmlFor="confirmPassword" className="block font-medium font-urbanist text-xs mb-3">
               Confirm Password
             </label>
             <input
@@ -81,19 +83,19 @@ const Signup = () => {
               name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mt-1"
+              className="input input-bordered w-full max-w-sm font-urbanist text-sm bg-[#FBFAE9]"
               placeholder="Confirm your password"
             />
           </div>
 
           <button
             type="submit"
-            className="flex border-b-orange-400 bg-red-300 text-white p-2 rounded-md justify-center items-center w-full mt-2"
+            className="flex p-4  bg-[#093D2B] text-white rounded-md justify-center items-center w-full mt-2 font-urbanist text-sm font-bold"
           >
             {isLoading ? <span className="loading loading-ring loading-sm"></span> : "Sign Up"}
           </button>
-          <div className="mb-4">
-            <p>Already have an account? <Link to="/auth/login" className=" font-bold">
+          <div className="mb-4 font-urbanist text-sm mt-3">
+            <p>Already have an account? <Link to="/auth/login" className=" font-bold text-[#D4AB0E] font-urbanist">
               Login
             </Link></p>
             

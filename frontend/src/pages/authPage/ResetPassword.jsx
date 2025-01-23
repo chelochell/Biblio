@@ -29,31 +29,40 @@ const ResetPassword = () => {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="flex justify-center items-center flex-col">
-        <h2 className="text-2xl font-bold flex justify-center items-center">
+      <div className="w-full max-w-sm border border-[#DED7D7] p-14 rounded-lg">
+        <h2 className="text-2xl font-bold flex justify-center items-center font-cormorant-garamond mb-4">
           Reset Password
         </h2>
+        <p className="text-sm text-gray-500 mb-8 text-center font-urbanist">Secure your account with a strong password</p>
         <form className="flex flex-col" onSubmit={handleSubmit}>
+          <label htmlFor="password" className="font-urbanist text-sm mb-3">
+            New Password
+          </label>
           <input
             type="password"
+            id="password"
+            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="New Password"
-            className="border border-gray-300 p-2 rounded-md w-full mb-4"
+            className="input input-bordered w-full max-w-sm font-urbanist bg-[#FBFAE9] mb-4"
+            placeholder="Enter your password"
           />
+          <label htmlFor="confirmPassword" className="font-urbanist text-sm mb-3">Confirm Password</label>
           <input
             type="password"
+            id="confirmPassword"
+            name="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            className="input input-bordered w-full max-w-sm font-urbanist bg-[#FBFAE9] mb-4"
             placeholder="Confirm Password"
-            className="border border-gray-300 p-2 rounded-md w-full mb-4"
           />
           {error && <p className="text-red-500">{error}</p>}
           {message && <p className="text-green-500">{message}</p>}
           <button
             type="submit"
             disabled={isLoading}
-            className="flex border-b-orange-400 bg-red-300 text-white p-2 rounded-md justify-center items-center w-full mt-2"
+            className="flex bg-[#093D2B] text-white p-2 rounded-md justify-center items-center w-full mt-2 font-urbanist text-sm font-medium p-3"
           >
             {isLoading ? "Resetting..." : "Set New Password"}
           </button>

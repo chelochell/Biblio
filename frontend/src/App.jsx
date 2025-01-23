@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import CommunityPage from "./pages/CommunityPage";
 import HomePage from "./pages/HomePage";
 import ClubsPage from "./pages/ClubsPage";
@@ -15,6 +14,7 @@ import { useAuthStore } from "./store/authStore";
 import { Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import LoadingSpinner from "./components/LoadingSpinner";
+
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -64,6 +64,7 @@ function App() {
           path="/auth/signup"
           element={
             <RedirectAuthenticatedUser>
+             
               <SignupPage />
             </RedirectAuthenticatedUser>
           }

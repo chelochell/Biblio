@@ -7,9 +7,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        bellota: ['Bellota', 'cursive'],
-        geologica: ['Geologica', 'sans-serif'],
-        lexend: ['Lexend', 'sans-serif'],
+        // Add the custom fonts
+        'cormorant-garamond': ['Cormorant Garamond', 'serif'],
+        'urbanist': ['Urbanist', 'sans-serif'],
       },
       colors: {
         'text-color': '#444444', // Custom text color
