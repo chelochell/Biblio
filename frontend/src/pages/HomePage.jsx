@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import search from "../images/search-icon.svg";
-import bg_banner from "../images/bg_banner.svg";
+import bg from "../images/bg.svg";
 import { useBookStore } from "../store/book";
 import trendingBook from "../images/Trending Book 1.jpg";
 import trendingBook2 from "../images/TrendingBook2.jpg";
 import bookCover1 from "../images/BookClubCover1.jpg";
 import Navbar from "../components/Navbar";
+import firstBook from "../images/PopularBoks/firstBook.jpg";
+import secondBook from "../images/PopularBoks/secondBook.jpg";
+import thirdBook from "../images/PopularBoks/thirdBook.jpg";
+import fourthBook from "../images/PopularBoks/fourthBook.jpg";
+import fifthBook from "../images/PopularBoks/fifthBook.webp"; 
 
 
 const HomePage = () => {
@@ -35,48 +39,72 @@ const HomePage = () => {
       <Navbar />
       <div className="w-full h-screen">
         <img
-          src={bg_banner}
+          src={bg}
           alt="Home"
           className="w-full h-auto object-cover"
         />
       </div>
 
       <div className="relative flex flex-col items-center justify-center px-4 -mt-96">
-        <h1 className="text-4xl md:text-5xl text-center max-w-3xl leading-relaxed">
-          <span className="text-gray-700">Ready to </span>
-          <span className="text-amber-400 font-medium">discover</span>
-          <span className="text-gray-700"> your </span>
-          <br />
-          <span className="text-gray-700"> next </span>
-          <span className="text-purple-600 italic">favorite book</span>
-          <span className="text-gray-700">?</span>
+        <h1 className="text-4xl md:text-5xl text-center max-w-3xl leading-relaxed font-urbanist font-bold">
+          <span className="text-[#526C03]">Ready to discover your</span><br />
+          <span className="text-gray-700">next favorite book?</span>
+
         </h1>
 
-        <p className="text-gray-600 text-center mt-6 mb-8 max-w-2xl">
-          Explore thousands of titles across all genres and find the perfect
+        <p className="text-gray-600 text-center mt-6 mb-8 max-w-2xl font-urbanist font-light">
+          Explore thousands of titles across all genres and find the<br />perfect
           story to dive into.
         </p>
 
-        <div className="w-full max-w-2xl">
-          <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2">
-              <img
-                src="/images/search-icon.svg"
-                alt="Search"
-                className="w-5 h-5 text-gray-400"
-              />
-            </div>
-            <input
-              type="text"
-              placeholder="Search by title, author, or genre..."
-              className="w-full px-12 py-5 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-200"
-            />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2">
-              <button className="px-6 py-2 bg-gray-800 text-white rounded-full">
-                Search
-              </button>
+        <div className="w-full max-w-2xl flex justify-center">
+          <div className="relative w-full">
+            <div className="relative flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+              <div className="relative w-full md:w-3/4">
+                <input
+                  type="text"
+                  placeholder="Search by title, author, or genre..."
+                  className="input w-full pl-10 pr-16 py-4 rounded-2xl bg-white/80 backdrop-blur-sm h-auto"
+                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                  />
+                </svg>
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <button className="px-4 py-2 bg-[#093D2B] text-white rounded-lg">
+                    Search
+                  </button>
+                </div>
+              </div>
+             
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="px-4 py-16 mx-12 mt-16">
+        <p className="text-2xl text-gray-800 font-cormorant-garamond font-bold">
+          Popular Book Club Picks
+        </p>
+        <p>Must-read books </p>
+
+        <div className="flex flex-row mt-5 gap-3">
+          <div className="flex flex-col">
+            <img src={firstBook} alt="firstBook" className="w-40 h-46 rounded-lg"/>
+            <h3 className="font-semibold text-sm">House of Flame and Shadow</h3>
+            <p className="text-sm text-gray-600">Sarah J. Maas</p>
+          </div>
+          
         </div>
       </div>
 
