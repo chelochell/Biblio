@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { resetPassword, error, isLoading, message } = useAuthStore();
   const { token } = useParams();
   const navigate = useNavigate();
@@ -38,25 +40,43 @@ const ResetPassword = () => {
           <label htmlFor="password" className="font-urbanist text-sm mb-3">
             New Password
           </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="input input-bordered w-full max-w-sm font-urbanist bg-[#FBFAE9] mb-4"
-            placeholder="Enter your password"
-          />
+          <div className="relative mb-4">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input input-bordered w-full max-w-sm font-urbanist bg-[#FBFAE9]"
+              placeholder="Enter your password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-2 text-sm font-urbanist"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
           <label htmlFor="confirmPassword" className="font-urbanist text-sm mb-3">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="input input-bordered w-full max-w-sm font-urbanist bg-[#FBFAE9] mb-4"
-            placeholder="Confirm Password"
-          />
+          <div className="relative mb-4">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              id="confirmPassword"
+              name="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="input input-bordered w-full max-w-sm font-urbanist bg-[#FBFAE9]"
+              placeholder="Confirm Password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-2 top-2 text-sm font-urbanist"
+            >
+              {showConfirmPassword ? "Hide" : "Show"}
+            </button>
+          </div>
           {error && <p className="text-red-500">{error}</p>}
           {message && <p className="text-green-500">{message}</p>}
           <button

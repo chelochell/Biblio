@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import profile from "../images/profile.jpg";
 import { useAuthStore } from "../store/authStore";
+import logo from "../images/logo.svg";
 
 const Navbar = () => {
   const { user, logout } = useAuthStore();
@@ -13,7 +14,7 @@ const Navbar = () => {
       <div className="navbar-center p-6">
         <nav className="flex items-center">
           <div className="font-bold text-xl text-black fontFamily-lexend">
-            Biblio
+            <img src={logo} alt="logo" className="h-7" />
           </div>
 
           <div className="flex-1 flex justify-center">

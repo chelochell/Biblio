@@ -4,11 +4,9 @@ import bg_banner from "../images/bg_banner.svg";
 import { useBookStore } from "../store/book";
 import trendingBook from "../images/Trending Book 1.jpg";
 import trendingBook2 from "../images/TrendingBook2.jpg";
-import recommendedBook from "../images/readmorebooks.svg";
-import curve from "../images/curve.svg";
-import discoverBook from "../images/discoverBook.svg";
 import bookCover1 from "../images/BookClubCover1.jpg";
 import Navbar from "../components/Navbar";
+
 
 const HomePage = () => {
   const { books, fetchBook } = useBookStore();

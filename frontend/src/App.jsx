@@ -6,7 +6,7 @@ import ClubsPage from "./pages/ClubsPage";
 import NotificationPage from "./pages/NotificationPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/authPage/LoginPage";
-import SignupPage from "./pages/authPage/SignupPage";
+import Signup from './pages/authPage/Signup';
 import ForgotPasswordPage from "./pages/authPage/ForgotPasswordPage";
 import VerifyEmail from "./pages/authPage/VerifyEmail";
 import ResetPassword from "./pages/authPage/ResetPassword";
@@ -65,7 +65,7 @@ function App() {
           element={
             <RedirectAuthenticatedUser>
              
-              <SignupPage />
+              <Signup />
             </RedirectAuthenticatedUser>
           }
         />
