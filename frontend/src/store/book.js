@@ -1,11 +1,5 @@
 import { create } from "zustand";
 
- 
-
-
-
-
-
 
 export const useBookStore = create((set) => ({
   books: [],
@@ -110,4 +104,20 @@ export const useBookStore = create((set) => ({
       return { success: false, message: 'An error occurred while updating the book' };
     }
   },
+  fetchPopularBooks: async () => {
+    try {
+      const res = await fetch("https://hapi-books.p.rapidapi.com/month/2025/1", {
+        headers: {
+          'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+          'x-rapidapi-host': 'hapi-books.p.rapidapi.com'
+        }
+      });
+
+      const data = await res.json();
+      set({ popularBooks: data });
+    } catch (error) {
+      console.error('Error fetching popular books:', error);
+    }
+  },
+  
 }));

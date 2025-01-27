@@ -14,8 +14,8 @@ import { useAuthStore } from "./store/authStore";
 import { Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import LoadingSpinner from "./components/LoadingSpinner";
-
-
+import SavedPage from "./pages/SavedPage";
+import CreatePage from "./pages/CreatePage";
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
@@ -97,6 +97,8 @@ function App() {
                 <Route path="/Clubs" element={<ClubsPage />} />
                 <Route path="/Notifications" element={<NotificationPage />} />
                 <Route path="/Profile" element={<ProfilePage />} />
+                <Route path="/saved" element={<SavedPage />} />
+                <Route path="/create" element={<CreatePage />} />
               </Routes>
             </>
           }

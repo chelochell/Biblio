@@ -9,8 +9,7 @@ import multer from "multer";
 import path from 'path';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
-
-
+import popularBookRoutes from './routes/popularBook.routes.js';
 dotenv.config();
 
 const app = express();
@@ -78,10 +77,13 @@ app.post('/upload', upload.single('file'), (req, res) => {
   }
 });
 
+
 app.use("/api/books", bookRouters);
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/clubs", clubRouter);
-app.use("/api/auth", authRoutes)
+app.use("/api/auth", authRoutes);
+app.use("/api/popular", popularBookRoutes);
+
 app.listen(PORT, () => {
   connectDB();
   console.log("Server started at http://localhost:" + PORT);

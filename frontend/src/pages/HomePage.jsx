@@ -6,18 +6,20 @@ import trendingBook2 from "../images/TrendingBook2.jpg";
 import bookCover1 from "../images/BookClubCover1.jpg";
 import Navbar from "../components/Navbar";
 import firstBook from "../images/PopularBoks/firstBook.jpg";
-import secondBook from "../images/PopularBoks/secondBook.jpg";
-import thirdBook from "../images/PopularBoks/thirdBook.jpg";
-import fourthBook from "../images/PopularBoks/fourthBook.jpg";
-import fifthBook from "../images/PopularBoks/fifthBook.webp"; 
+import authorbg from "../images/authorbg.svg";
+
 
 
 const HomePage = () => {
-  const { books, fetchBook } = useBookStore();
+  const { books, fetchBook, popularBooks , fetchPopularBooks} = useBookStore();
+
 
   useEffect(() => {
     fetchBook();
-  }, [fetchBook]);
+    fetchPopularBooks();
+  }, [fetchBook, fetchPopularBooks]);
+  
+  console.log(popularBooks);
 
   const [selectedGenre, setSelectedGenre] = useState("mystery");
 
@@ -33,6 +35,7 @@ const HomePage = () => {
     "self-help",
     "thriller",
   ];
+
 
   return (
     <div>
@@ -103,13 +106,28 @@ const HomePage = () => {
             <img src={firstBook} alt="firstBook" className="w-40 h-46 rounded-lg"/>
             <h3 className="font-semibold text-sm">House of Flame and Shadow</h3>
             <p className="text-sm text-gray-600">Sarah J. Maas</p>
+
+          </div>
+
+          <div>
+           
+             
           </div>
           
         </div>
       </div>
 
-      <div className="px-4 py-16 mx-12 mt-16">
-        <div className="max-w-7xl mx-auto">
+      <div className="w-full h-auto mb-60">
+        <img src={authorbg} alt="authorbg" className="w-full h-auto object-cover" />
+        <div className="relative flex flex-col items-center justify-center px-4 -mt-96">
+          <p className="text-lg font-semibold">Author Feature List</p>
+          <p className="text-sm text-gray-600">Meet the Minds Behind the Stories.</p>
+        </div>
+      </div>
+
+      <div className="px-4 py-16 mx-12 ">
+        
+        <div className="max-w-7xl mx-auto mt-32">
           <h2 className="text-2xl font-medium text-gray-800 mb-8">
             My Library
           </h2>

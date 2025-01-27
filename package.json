@@ -4,7 +4,6 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon backend/server.js"
-   
   },
   "type": "module",
   "keywords": [],
