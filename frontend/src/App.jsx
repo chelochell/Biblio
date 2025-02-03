@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import CommunityPage from "./pages/CommunityPage";
-import HomePage from "./pages/HomePage";
+import {HomePage} from "./pages/HomePage";
 import ClubsPage from "./pages/ClubsPage";
 import NotificationPage from "./pages/NotificationPage";
 import ProfilePage from "./pages/ProfilePage";
