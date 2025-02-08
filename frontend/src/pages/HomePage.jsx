@@ -8,17 +8,14 @@ import Navbar from "../components/Navbar";
 import firstBook from "../images/PopularBoks/firstBook.jpg";
 import authorbg from "../images/authorbg.svg";
 
-
-
 const HomePage = () => {
-  const { books, fetchBook, popularBooks , fetchPopularBooks} = useBookStore();
-
+  const { books, fetchBook, popularBooks, fetchPopularBooks } = useBookStore();
 
   useEffect(() => {
     fetchBook();
     fetchPopularBooks();
   }, []);
-  
+
   useEffect(() => {
     console.log("Books:", books);
     console.log("Popular Books:", popularBooks);
@@ -39,28 +36,24 @@ const HomePage = () => {
     "thriller",
   ];
 
-
   return (
     <div>
       <Navbar />
       <div className="w-full h-screen">
-        <img
-          src={bg}
-          alt="Home"
-          className="w-full h-auto object-cover"
-        />
+        <img src={bg} alt="Home" className="w-full h-auto object-cover" />
       </div>
 
       <div className="relative flex flex-col items-center justify-center px-4 -mt-96">
         <h1 className="text-4xl md:text-5xl text-center max-w-3xl leading-relaxed font-urbanist font-bold">
-          <span className="text-[#526C03]">Ready to discover your</span><br />
+          <span className="text-[#526C03]">Ready to discover your</span>
+          <br />
           <span className="text-gray-700">next favorite book?</span>
-
         </h1>
 
         <p className="text-gray-600 text-center mt-6 mb-8 max-w-2xl font-urbanist font-light">
-          Explore thousands of titles across all genres and find the<br />perfect
-          story to dive into.
+          Explore thousands of titles across all genres and find the
+          <br />
+          perfect story to dive into.
         </p>
 
         <div className="w-full max-w-2xl flex justify-center">
@@ -92,7 +85,6 @@ const HomePage = () => {
                   </button>
                 </div>
               </div>
-             
             </div>
           </div>
         </div>
@@ -104,31 +96,44 @@ const HomePage = () => {
         </p>
         <p>Must-read books</p>
 
-        <div className="flex flex-row mt-5 gap-3">
-          {popularBooks.length > 0 ? (
+        <div className="flex flex-row mt-5 gap-4">
+          {popularBooks && popularBooks.length > 0 ? (
             popularBooks.map((book) => (
               <div key={book._id} className="flex flex-col">
-                <img src={book.cover} alt={book.name} className="w-40 h-46 rounded-lg"/>
-                <h3 className="font-semibold text-sm">{book.name}</h3>
+                <img
+                  src={book.cover || firstBook}
+                  alt={book.name}
+                  className="w-40 h-56 rounded-lg object-cover shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = firstBook;
+                  }}
+                />
+                <h3 className="font-semibold text-sm mt-2 truncate">
+                  {book.name}
+                </h3>
                 <p className="text-sm text-gray-600">{book.author}</p>
               </div>
             ))
-          ) : (
-            <p className="text-gray-600">No popular books available at the moment.</p>
-          )}
+          ) : null}
         </div>
       </div>
 
       <div className="w-full h-auto mb-60">
-        <img src={authorbg} alt="authorbg" className="w-full h-auto object-cover" />
+        <img
+          src={authorbg}
+          alt="authorbg"
+          className="w-full h-auto object-cover"
+        />
         <div className="relative flex flex-col items-center justify-center px-4 -mt-96">
           <p className="text-lg font-semibold">Author Feature List</p>
-          <p className="text-sm text-gray-600">Meet the Minds Behind the Stories.</p>
+          <p className="text-sm text-gray-600">
+            Meet the Minds Behind the Stories.
+          </p>
         </div>
       </div>
 
       <div className="px-4 py-16 mx-12 ">
-        
         <div className="max-w-7xl mx-auto mt-32">
           <h2 className="text-2xl font-medium text-gray-800 mb-8">
             My Library
@@ -138,21 +143,39 @@ const HomePage = () => {
             {books && books.length > 0 ? (
               books.map((book) => (
                 <div key={book._id} className="flex-shrink-0 w-48">
-                  <div className="relative h-64 rounded-lg overflow-hidden">
+                  <div className="relative h-64 rounded-lg overflow-hidden shadow-lg">
                     <img
-                      src={book.cover}
-                      alt={book.name}
-                      className="w-full h-full object-cover"
+                      src={book.image || "/placeholder-book.png"}
+                      alt={book.title || "Book cover"}
+                      className="w-full h-full object-cover transition-opacity duration-300"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = "/placeholder-book.png";
                       }}
                     />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                      <h3 className="text-white font-medium text-sm truncate">
+                        {book.title || "Untitled"}
+                      </h3>
+                      <p className="text-gray-300 text-xs truncate">
+                        {book.author || "Unknown Author"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-600">No books available at the moment.</p>
+              <div className="w-full text-center py-8">
+                <p className="text-gray-600">No books available at the moment.</p>
+                <button
+                  onClick={() =>
+                    document.querySelector('[aria-label="Add New Book"]')?.click()
+                  }
+                  className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Add Your First Book
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -213,7 +236,7 @@ const HomePage = () => {
                 The Magical Language of Others
               </h2>
               <p className="text-text-color font-lexend font-light ">
-                aIt's a powerful memoir that delves into themes of family, love,
+                It's a powerful memoir that delves into themes of family, love,
                 loss, and the struggles of bridging cultural and generational
                 divides.
               </p>

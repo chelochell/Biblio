@@ -7,7 +7,7 @@ export const useBookStore = create((set) => ({
   popularBooks: [],
   setPopularBooks: (popularBooks) => set({ popularBooks }),
   createBook: async (newBook) => {
-    // Validate required fields
+  
     const requiredFields = ['title', 'author', 'description', 'genre', 'status', 'image', 'reviews'];
     const missingFields = requiredFields.filter(field => !newBook[field]);
     
@@ -111,8 +111,13 @@ export const useBookStore = create((set) => ({
       const apiUrl = import.meta.env.VITE_RAPIDAPI_URL;
       const apiKey = import.meta.env.VITE_RAPIDAPI_KEY;
       const host = import.meta.env.VITE_RAPIDAPI_HOST;
+      
+      // Get current year and month
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // JavaScript months are 0-based
 
-      const res = await fetch(`${apiUrl}/month/${year}/${month}`, {
+      const res = await fetch(`${apiUrl}/month/${year}/${month}`,  {
         headers: {
           'x-rapidapi-key': apiKey,
           'x-rapidapi-host': host
@@ -125,5 +130,6 @@ export const useBookStore = create((set) => ({
       console.error('Error fetching popular books:', error);
     }
   },
+  
   
 }));
