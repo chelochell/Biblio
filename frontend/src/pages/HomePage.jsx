@@ -17,9 +17,12 @@ const HomePage = () => {
   useEffect(() => {
     fetchBook();
     fetchPopularBooks();
-  }, [fetchBook, fetchPopularBooks]);
+  }, []);
   
-  console.log(popularBooks);
+  useEffect(() => {
+    console.log("Books:", books);
+    console.log("Popular Books:", popularBooks);
+  }, []);
 
   const [selectedGenre, setSelectedGenre] = useState("mystery");
 
@@ -99,22 +102,20 @@ const HomePage = () => {
         <p className="text-2xl text-gray-800 font-cormorant-garamond font-bold">
           Popular Book Club Picks
         </p>
-        <p>Must-read books </p>
+        <p>Must-read books</p>
 
         <div className="flex flex-row mt-5 gap-3">
-          <div className="flex flex-col">
-            <img src={firstBook} alt="firstBook" className="w-40 h-46 rounded-lg"/>
-            <h3 className="font-semibold text-sm">House of Flame and Shadow</h3>
-            <p className="text-sm text-gray-600">Sarah J. Maas</p>
-
-          </div>
-
-          <div>
-            <h1></h1>
-           
-             
-          </div>
-          
+          {popularBooks.length > 0 ? (
+            popularBooks.map((book) => (
+              <div key={book._id} className="flex flex-col">
+                <img src={book.cover} alt={book.name} className="w-40 h-46 rounded-lg"/>
+                <h3 className="font-semibold text-sm">{book.name}</h3>
+                <p className="text-sm text-gray-600">{book.author}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-600">No popular books available at the moment.</p>
+          )}
         </div>
       </div>
 
@@ -134,21 +135,25 @@ const HomePage = () => {
           </h2>
 
           <div className="flex space-x-6 overflow-x-auto pb-6">
-            {books?.map((book) => (
-              <div key={book._id} className="flex-shrink-0 w-48">
-                <div className="relative h-64 rounded-lg overflow-hidden">
-                  <img
-                    src={book.image}
-                    alt={book.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "/placeholder-book.png";
-                    }}
-                  />
+            {books && books.length > 0 ? (
+              books.map((book) => (
+                <div key={book._id} className="flex-shrink-0 w-48">
+                  <div className="relative h-64 rounded-lg overflow-hidden">
+                    <img
+                      src={book.cover}
+                      alt={book.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/placeholder-book.png";
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-gray-600">No books available at the moment.</p>
+            )}
           </div>
         </div>
       </div>

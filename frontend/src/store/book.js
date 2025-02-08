@@ -4,6 +4,8 @@ import { create } from "zustand";
 export const useBookStore = create((set) => ({
   books: [],
   setNewBook: (books) => set({ books }),
+  popularBooks: [],
+  setPopularBooks: (popularBooks) => set({ popularBooks }),
   createBook: async (newBook) => {
     // Validate required fields
     const requiredFields = ['title', 'author', 'description', 'genre', 'status', 'image', 'reviews'];
@@ -106,10 +108,14 @@ export const useBookStore = create((set) => ({
   },
   fetchPopularBooks: async () => {
     try {
-      const res = await fetch("https://hapi-books.p.rapidapi.com/month/2025/1", {
+      const apiUrl = import.meta.env.VITE_RAPIDAPI_URL;
+      const apiKey = import.meta.env.VITE_RAPIDAPI_KEY;
+      const host = import.meta.env.VITE_RAPIDAPI_HOST;
+
+      const res = await fetch(`${apiUrl}/month/${year}/${month}`, {
         headers: {
-          'x-rapidapi-key': process.env.RAPIDAPI_KEY,
-          'x-rapidapi-host': 'hapi-books.p.rapidapi.com'
+          'x-rapidapi-key': apiKey,
+          'x-rapidapi-host': host
         }
       });
 
