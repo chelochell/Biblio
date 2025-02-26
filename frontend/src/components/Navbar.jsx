@@ -24,21 +24,28 @@ const Navbar = () => {
                 <Link to="/discover">Discover</Link>
               </li>
               <li>
-                <div className="flex items-center cursor-pointer relative" tabIndex="0">
-                  <button className="" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                <div className="flex items-center relative" tabIndex="0">
+                  <button className="hover:bg-gray-200" onClick={() => setDropdownOpen(!dropdownOpen)}>
                     Create
-                  </button>
-                  {dropdownOpen && (
+
+                    {dropdownOpen && (
                     <div
                       tabIndex="0"
                       className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 absolute left-1/2 transform -translate-x-1/2 top-full mt-8 z-50"
                     >
-                     <button>
-                      
+                     <button className="w-full font-urbanist hover:bg-gray-200">
+                      Create Club
+                      <small>Join different clubs</small>
+                     </button>
+                     <button className="w-full font-urbanist hover:bg-gray-200">
+                      Book Collections
+                      <small>A collection of books</small>
                      </button>
                       
                     </div>
                   )}
+                  </button>
+                  
                 </div>
               </li>
             </ul>
