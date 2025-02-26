@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import CommunityPage from "./pages/CommunityPage";
-import HomePage from "./pages/HomePage";
+import {HomePage} from "./pages/HomePage";
 import ClubsPage from "./pages/ClubsPage";
 import NotificationPage from "./pages/NotificationPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -16,6 +16,8 @@ import { Toaster } from "react-hot-toast";
 import LoadingSpinner from "./components/LoadingSpinner";
 import SavedPage from "./pages/SavedPage";
 import CreatePage from "./pages/CreatePage";
+import DiscoverPage from "./pages/DiscoverPage"; // Import DiscoverPage
+
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
@@ -99,6 +101,7 @@ function App() {
                 <Route path="/Profile" element={<ProfilePage />} />
                 <Route path="/saved" element={<SavedPage />} />
                 <Route path="/create" element={<CreatePage />} />
+                <Route path="/discover" element={<DiscoverPage />} /> {/* Add DiscoverPage route */}
               </Routes>
             </>
           }

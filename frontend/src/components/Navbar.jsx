@@ -5,6 +5,7 @@ import { useAuthStore } from "../store/authStore";
 import logo from "../images/logo.svg";
 
 const Navbar = () => {
+  const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const { user, logout } = useAuthStore();
   const handleLogout = () => {
     logout();
@@ -20,12 +21,25 @@ const Navbar = () => {
           <div className="flex-1 flex justify-end">
             <ul className="menu menu-horizontal bg-base-100 rounded-box fontFamily-lexend font-weight-regular">
               <li>
-                <Link to="/">Discover</Link>
+                <Link to="/discover">Discover</Link>
               </li>
               <li>
-                <button className="">
-                  <Link to="/">Create</Link>
-                </button>
+                <div className="flex items-center cursor-pointer relative" tabIndex="0">
+                  <button className="" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                    Create
+                  </button>
+                  {dropdownOpen && (
+                    <div
+                      tabIndex="0"
+                      className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 absolute left-1/2 transform -translate-x-1/2 top-full mt-8 z-50"
+                    >
+                     <button>
+                      
+                     </button>
+                      
+                    </div>
+                  )}
+                </div>
               </li>
             </ul>
           </div>

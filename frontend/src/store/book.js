@@ -1,13 +1,20 @@
 import { create } from "zustand";
 
-
 export const useBookStore = create((set) => ({
+  // Books state
   books: [],
+  booksLoading: false,
+  booksError: null,
   setNewBook: (books) => set({ books }),
+
+  // Popular books state
   popularBooks: [],
+  popularBooksLoading: false,
+  popularBooksError: null,
   setPopularBooks: (popularBooks) => set({ popularBooks }),
+
+  // Create book
   createBook: async (newBook) => {
-  
     const requiredFields = ['title', 'author', 'description', 'genre', 'status', 'image', 'reviews'];
     const missingFields = requiredFields.filter(field => !newBook[field]);
     
@@ -41,22 +48,37 @@ export const useBookStore = create((set) => ({
     }
   },
 
+  // Fetch books
   fetchBook: async () => {
     try {
+      set({ booksLoading: true, booksError: null });
+      
       const res = await fetch("/api/books");
+      if (!res.ok) {
+        throw new Error(`API responded with status ${res.status}`);
+      }
+      
       const data = await res.json();
       
       if (!data.success) {
-        console.error('Failed to fetch books:', data.message);
-        return;
+        throw new Error(data.message || 'Failed to fetch books');
       }
 
-      set({ books: data.data });
+      set({ 
+        books: data.data,
+        booksLoading: false 
+      });
     } catch (error) {
       console.error('Error fetching books:', error);
+      set({ 
+        booksError: error.message,
+        booksLoading: false,
+        books: []
+      });
     }
   },
 
+  // Delete book
   deleteBook: async (pid) => {
     try {
       const res = await fetch(`/api/books/${pid}`, {
@@ -79,6 +101,7 @@ export const useBookStore = create((set) => ({
     }
   },
 
+  // Update book
   updateBook: async (pid, updatedBook) => {
     try {
       const res = await fetch(`/api/books/${pid}`, {
@@ -106,30 +129,54 @@ export const useBookStore = create((set) => ({
       return { success: false, message: 'An error occurred while updating the book' };
     }
   },
+
+  // Fetch popular books
   fetchPopularBooks: async () => {
     try {
-      const apiUrl = import.meta.env.VITE_RAPIDAPI_URL;
+      set({ popularBooksLoading: true, popularBooksError: null });
+      
+      const baseUrl = import.meta.env.VITE_RAPIDAPI_URL?.replace(/\/+$/, ''); 
       const apiKey = import.meta.env.VITE_RAPIDAPI_KEY;
       const host = import.meta.env.VITE_RAPIDAPI_HOST;
       
-      // Get current year and month
+      if (!baseUrl || !apiKey || !host) {
+        throw new Error('Missing required API configuration');
+      }
+
       const date = new Date();
       const year = date.getFullYear();
-      const month = date.getMonth() + 1; // JavaScript months are 0-based
+      const month = date.getMonth() + 1;
 
-      const res = await fetch(`${apiUrl}/month/${year}/${month}`,  {
+      const url = `${baseUrl}/${year}/${month}`;
+
+      const res = await fetch(url, {
         headers: {
           'x-rapidapi-key': apiKey,
           'x-rapidapi-host': host
         }
       });
 
+      if (!res.ok) {
+        throw new Error(`API responded with status ${res.status}`);
+      }
+
       const data = await res.json();
-      set({ popularBooks: data });
+      
+      if (!Array.isArray(data)) {
+        throw new Error('Unexpected API response format');
+      }
+      
+      set({ 
+        popularBooks: data,
+        popularBooksLoading: false 
+      });
     } catch (error) {
       console.error('Error fetching popular books:', error);
+      set({ 
+        popularBooksError: error.message,
+        popularBooksLoading: false,
+        popularBooks: []
+      });
     }
-  },
-  
-  
+  }
 }));
