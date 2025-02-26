@@ -15,7 +15,8 @@ const Navbar = () => {
       <div className="navbar-center px-10 py-3 fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
         <nav className="flex items-center">
           <div className="font-bold text-xl text-black fontFamily-lexend">
-            <img src={logo} alt="logo" className="h-7"/>
+            <Link to='/'><img src={logo} alt="logo" className="h-7"/></Link>
+            
           </div>
 
           <div className="flex-1 flex justify-end">
