@@ -6,8 +6,12 @@ import Navbar from "../components/Navbar";
 import { useAuthStore } from "../store/authStore";
 
 const ProfilePage = () => {
-  const modalRef = useRef(null);
+  const addBookModalRef = useRef(null);
+  const editProfileModalRef = useRef(null);
   const { user } = useAuthStore();
+  const [activeTab, setActiveTab] = useState("Collection");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const [newBook, setNewBook] = useState({
     title: "",
     author: "",
@@ -36,16 +40,29 @@ const ProfilePage = () => {
       image: null,
       imagePreview: null,
     });
+    setFormErrors({});
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setFormErrors({...formErrors, image: "Image size should be less than 5MB"});
+        return;
+      }
+      
       setNewBook((prev) => ({
         ...prev,
         image: file,
         imagePreview: URL.createObjectURL(file),
       }));
+      
+      
+      if (formErrors.image) {
+        const newErrors = {...formErrors};
+        delete newErrors.image;
+        setFormErrors(newErrors);
+      }
     }
   };
 
@@ -55,15 +72,37 @@ const ProfilePage = () => {
       ...prev,
       [name]: value,
     }));
+    
+   
+    if (formErrors[name]) {
+      const newErrors = {...formErrors};
+      delete newErrors[name];
+      setFormErrors(newErrors);
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!newBook.title.trim()) errors.title = "Title is required";
+    if (!newBook.author.trim()) errors.author = "Author is required";
+    if (!newBook.description.trim()) errors.description = "Description is required";
+    if (!newBook.genre) errors.genre = "Please select a genre";
+    if (!newBook.status) errors.status = "Please select a status";
+    if (!newBook.image) errors.image = "Please select a book cover image";
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleAddBook = async (e) => {
     e.preventDefault();
-
-    if (!newBook.image) {
-      alert("Please select a book cover image");
+    
+    if (!validateForm()) {
       return;
     }
+
+    setIsSubmitting(true);
 
     const formData = new FormData();
     formData.append("file", newBook.image);
@@ -80,16 +119,16 @@ const ProfilePage = () => {
       );
 
       if (!uploadRes.data.success) {
-        alert("Failed to upload image: " + uploadRes.data.message);
+        setFormErrors({image: "Failed to upload image: " + uploadRes.data.message});
+        setIsSubmitting(false);
         return;
       }
-
-      console.log("Upload response:", uploadRes.data);
 
       const imageUrl = uploadRes.data.fileUrl;
       if (!imageUrl) {
         console.error("Upload response:", uploadRes.data);
-        alert("Failed to get image URL from upload response");
+        setFormErrors({image: "Failed to get image URL from upload response"});
+        setIsSubmitting(false);
         return;
       }
 
@@ -106,16 +145,30 @@ const ProfilePage = () => {
       const { success, message } = await createBook(bookData);
 
       if (success) {
-        modalRef.current?.close();
+        addBookModalRef.current?.close();
         resetForm();
-        alert("Book added successfully!");
+        
+       
+        const toast = document.createElement('div');
+        toast.className = 'toast toast-top toast-end';
+        toast.innerHTML = `
+          <div class="alert alert-success">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span>Book added successfully!</span>
+          </div>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => document.body.removeChild(toast), 3000);
+        
         await fetchBook();
       } else {
-        alert(message);
+        setFormErrors({submit: message});
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while adding the book.");
+      setFormErrors({submit: "An error occurred while adding the book."});
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -123,289 +176,415 @@ const ProfilePage = () => {
     <div className="container mx-auto px-4 py-8">
       <Navbar />
       <div className="mb-8 text-center justify-center items-center flex flex-col font-urbanist mt-24">
-        <img src={pp} alt="" className="w-24 h-24 rounded-full" />
+        <img src={pp} alt="" className="w-24 h-24 rounded-full object-cover" />
         <h1 className="text-3xl font-bold mb-2 mt-6 ">{user.username}</h1>
         <p className="text-[#526C03]">Book Cluster</p>
         <div className="mt-6">
-          <button className="bg-[#292229] text-white px-4 py-2 rounded-2xl hover:bg-[#526C03] hover:text-white transition-all duration-300">
+          <button
+            className="bg-[#292229] text-white px-4 py-2 rounded-2xl hover:bg-[#526C03] hover:text-white transition-all duration-300"
+            onClick={() => editProfileModalRef?.current?.showModal()}
+          >
             Edit Profile
           </button>
         </div>
       </div>
 
-      <div
-        role="tablist"
-        className="tabs tabs-bordered mb-6 justify-center items-center"
-      >
-        <input
-          type="radio"
-          name="my_tabs_1"
-          role="tab"
-          className="tab"
-          aria-label="Collection"
-          defaultChecked
-        />
-
-        <div role="tabpanel" className="tab-content p-4" >
-          <div className="flex justify-end mb-4">
-            <button
-              className="bg-[#292229] rounded-full"
-              onClick={() => modalRef.current?.showModal()}
+      
+      <div className="flex flex-col items-center">
+        <div className="w-full max-w-4xl">
+         
+          <div className="flex w-full border-b border-gray-200">
+            <div 
+              className={`py-4 px-4 font-medium text-center flex-1 relative cursor-pointer ${
+                activeTab === "Collection" ? "text-[#292229]" : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => setActiveTab("Collection")}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-6"
-                color="white"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                />
-              </svg>
-            </button>
+              Collection
+              {activeTab === "Collection" && (
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-[#292229]"></div>
+              )}
+            </div>
+            <div 
+              className={`py-4 px-4 font-medium text-center flex-1 relative cursor-pointer ${
+                activeTab === "Clubs" ? "text-[#292229]" : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => setActiveTab("Clubs")}
+            >
+              Clubs
+              {activeTab === "Clubs" && (
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-[#292229]"></div>
+              )}
+            </div>
+            <div 
+              className={`py-4 px-4 font-medium text-center flex-1 relative cursor-pointer ${
+                activeTab === "Posts" ? "text-[#292229]" : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => setActiveTab("Posts")}
+            >
+              Posts
+              {activeTab === "Posts" && (
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-[#292229]"></div>
+              )}
+            </div>
           </div>
 
-          {/* BOOKS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-center ">
-            {books.map((book) => (
-              <div key={book._id} className="card bg-base-100 shadow-xl">
-                <figure className="px-4 pt-4">
-                  <img
-                    src={book.image || "/placeholder-book.png"}
-                    alt={book.title}
-                    className="rounded-xl h-48 w-full object-cover"
-                  />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">{book.title}</h2>
-                  <p className="text-sm text-gray-600">by {book.author}</p>
-                  <p className="text-sm">{book.description}</p>
-                  <div className="flex justify-between mt-2">
-                    <span className="badge badge-primary">{book.genre}</span>
-                    <span className="badge badge-secondary">{book.status}</span>
-                  </div>
+          
+          <div className="py-4">
+            
+            {activeTab === "Collection" && (
+              <div>
+                <div className="flex justify-end mb-4">
+                  <button
+                    className="btn btn-primary btn-circle"
+                    onClick={() => addBookModalRef.current?.showModal()}
+                    aria-label="Add new book"
+                    title="Add new book"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                  </button>
                 </div>
+
+                {books.length === 0 ? (
+                  <div className="card bg-base-100 shadow-lg">
+                    <div className="card-body text-center">
+                      <h3 className="card-title justify-center text-xl mb-2">No books in your collection yet</h3>
+                      <p className="text-base-content/70 mb-4">Add your first book to start your collection</p>
+                      <div className="card-actions justify-center">
+                        <button 
+                          className="btn btn-primary"
+                          onClick={() => addBookModalRef.current?.showModal()}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="w-5 h-5 mr-2"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                          Add Your First Book
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {books.map((book) => (
+                      <div key={book._id} className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300">
+                        <figure className="px-4 pt-4">
+                          <img
+                            src={book.image || "/placeholder-book.png"}
+                            alt={book.title}
+                            className="rounded-xl h-48 w-full object-cover"
+                          />
+                        </figure>
+                        <div className="card-body">
+                          <h2 className="card-title">{book.title}</h2>
+                          <p className="text-sm text-base-content/70">by {book.author}</p>
+                          <p className="text-sm line-clamp-3">{book.description}</p>
+                          <div className="card-actions justify-between mt-2">
+                            <div className="badge badge-primary">{book.genre}</div>
+                            <div className="badge badge-secondary">{book.status}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            ))}
+            )}
+
+           
+            {activeTab === "Clubs" && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Clubss</h2>
+                <p>Loveu</p>
+              </div>
+            )}
+
+            
+            {activeTab === "Posts" && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Profile Posts</h2>
+                <p>Your profile Posts will appear here.</p>
+              </div>
+            )}
           </div>
-        </div>
-
-        <input
-          type="radio"
-          name="my_tabs_1"
-          role="tab"
-          className="tab"
-          aria-label="Reading Stats"
-        />
-        <div role="tabpanel" className="tab-content p-4">
-          <h2 className="text-2xl font-bold mb-4">Reading Statistics</h2>
-        </div>
-
-        <input
-          type="radio"
-          name="my_tabs_1"
-          role="tab"
-          className="tab"
-          aria-label="Settings"
-        />
-        <div role="tabpanel" className="tab-content p-4">
-          <h2 className="text-2xl font-bold mb-4">Profile Settings</h2>
         </div>
       </div>
 
-      <dialog ref={modalRef} className="modal">
-        <div className="w-11/11 max-w-5xl">
-          <h3 className="font-bold text-lg">Add a New Book</h3>
-          <p className="py-4">
-            Keep track of your reads with a new collection.
+    
+      <dialog ref={addBookModalRef} className="modal">
+        <div className="modal-box w-11/12 max-w-3xl bg-base-100 max-h-[90vh] overflow-auto">
+          <form method="dialog">
+            <button 
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" 
+              onClick={resetForm}
+            >
+              ✕
+            </button>
+          </form>
+          
+          <h3 className="font-bold text-xl mb-2">Add a New Book</h3>
+          <p className="text-base-content/70 mb-6">
+            Keep track of your reads with a new collection entry.
           </p>
 
+          {formErrors.submit && (
+            <button className="alert alert-error mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{formErrors.submit}</span>
+            </button>
+          )}
+
           <form onSubmit={handleAddBook} className="space-y-4">
-            <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={newBook.title}
-                onChange={handleInputChange}
-                placeholder="Enter the book title"
-                className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                required
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="form-control w-full">
+                <label className="label pt-0">
+                  <span className="label-text">Title <span className="text-error">*</span></span>
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={newBook.title}
+                  onChange={handleInputChange}
+                  placeholder="Enter the book title"
+                  className={`input input-bordered w-full ${formErrors.title ? "input-error" : ""}`}
+                />
+                {formErrors.title && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{formErrors.title}</span>
+                  </label>
+                )}
+              </div>
+
+              <div className="form-control w-full">
+                <label className="label pt-0">
+                  <span className="label-text">Author <span className="text-error">*</span></span>
+                </label>
+                <input
+                  type="text"
+                  id="author"
+                  name="author"
+                  value={newBook.author}
+                  onChange={handleInputChange}
+                  placeholder="Enter the author's name"
+                  className={`input input-bordered w-full ${formErrors.author ? "input-error" : ""}`}
+                />
+                {formErrors.author && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{formErrors.author}</span>
+                  </label>
+                )}
+              </div>
             </div>
 
-            <div>
-              <label
-                htmlFor="author"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Author
-              </label>
-              <input
-                type="text"
-                id="author"
-                name="author"
-                value={newBook.author}
-                onChange={handleInputChange}
-                placeholder="Enter the author's name"
-                className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Description
+            <div className="form-control w-full">
+              <label className="label py-1">
+                <span className="label-text">Description <span className="text-error">*</span></span>
               </label>
               <textarea
                 id="description"
                 name="description"
                 value={newBook.description}
                 onChange={handleInputChange}
-                rows="4"
+                rows="2"
                 placeholder="Write a brief description of the book"
-                className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                required
+                className={`textarea textarea-bordered w-full ${formErrors.description ? "textarea-error" : ""}`}
               />
+              {formErrors.description && (
+                <label className="label">
+                  <span className="label-text-alt text-error">{formErrors.description}</span>
+                </label>
+              )}
             </div>
 
-            <div>
-              <label
-                htmlFor="genre"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Genre
-              </label>
-              <select
-                id="genre"
-                name="genre"
-                value={newBook.genre}
-                onChange={handleInputChange}
-                className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                required
-              >
-                <option value="">Select a genre</option>
-                <option value="fiction">Fiction</option>
-                <option value="non-fiction">Non-Fiction</option>
-                <option value="mystery">Mystery</option>
-                <option value="fantasy">Fantasy</option>
-                <option value="romance">Romance</option>
-                <option value="science-fiction">Science Fiction</option>
-                <option value="biography">Biography</option>
-                <option value="historical">Historical</option>
-                <option value="self-help">Self-Help</option>
-                <option value="thriller">Thriller</option>
-                <option value="horror">Horror</option>
-                <option value="poetry">Poetry</option>
-              </select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control w-full">
+                <label className="label py-1">
+                  <span className="label-text">Genre <span className="text-error">*</span></span>
+                </label>
+                <select
+                  id="genre"
+                  name="genre"
+                  value={newBook.genre}
+                  onChange={handleInputChange}
+                  className={`select select-bordered w-full ${formErrors.genre ? "select-error" : ""}`}
+                >
+                  <option value="" disabled>Select a genre</option>
+                  <option value="fiction">Fiction</option>
+                  <option value="non-fiction">Non-Fiction</option>
+                  <option value="mystery">Mystery</option>
+                  <option value="fantasy">Fantasy</option>
+                  <option value="romance">Romance</option>
+                  <option value="science-fiction">Science Fiction</option>
+                  <option value="biography">Biography</option>
+                  <option value="historical">Historical</option>
+                  <option value="self-help">Self-Help</option>
+                  <option value="thriller">Thriller</option>
+                  <option value="horror">Horror</option>
+                  <option value="poetry">Poetry</option>
+                </select>
+                {formErrors.genre && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{formErrors.genre}</span>
+                  </label>
+                )}
+              </div>
+
+              <div className="form-control w-full">
+                <label className="label py-1">
+                  <span className="label-text">Status <span className="text-error">*</span></span>
+                </label>
+                <select
+                  id="status"
+                  name="status"
+                  value={newBook.status}
+                  onChange={handleInputChange}
+                  className={`select select-bordered w-full ${formErrors.status ? "select-error" : ""}`}
+                >
+                  <option value="" disabled>Select a status</option>
+                  <option value="to-be-read">To Be Read</option>
+                  <option value="reading">Reading</option>
+                  <option value="finished">Finished</option>
+                  <option value="dropped">Dropped</option>
+                  <option value="re-reading">Re-Reading</option>
+                </select>
+                {formErrors.status && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{formErrors.status}</span>
+                  </label>
+                )}
+              </div>
             </div>
 
-            <div>
-              <label
-                htmlFor="reviews"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Reviews
+            <div className="form-control w-full">
+              <label className="label py-1">
+                <span className="label-text">Reviews</span>
               </label>
               <textarea
                 id="reviews"
                 name="reviews"
                 value={newBook.reviews}
                 onChange={handleInputChange}
-                rows="4"
-                placeholder="Write your review or feedback"
-                className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                required
+                rows="2"
+                placeholder="Write your review or feedback (optional)"
+                className="textarea textarea-bordered w-full"
               />
             </div>
 
-            <div>
-              <label
-                htmlFor="status"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Status
+            <div className="form-control w-full">
+              <label className="label py-1">
+                <span className="label-text">Book Cover Image</span>
               </label>
-              <select
-                id="status"
-                name="status"
-                value={newBook.status}
-                onChange={handleInputChange}
-                className="mt-1 w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                required
-              >
-                <option value="">Select a status</option>
-                <option value="to-be-read">To Be Read</option>
-                <option value="reading">Reading</option>
-                <option value="finished">Finished</option>
-                <option value="dropped">Dropped</option>
-                <option value="re-reading">Re-Reading</option>
-              </select>
-            </div>
-
-            <div>
-              <label
-                htmlFor="image"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Book Cover Image
-              </label>
-              <div className="mt-1 flex items-center space-x-2">
-                <input
-                  type="file"
-                  id="image"
-                  name="image"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  required
-                />
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className={`file-input file-input-sm file-input-bordered w-full ${formErrors.image ? "file-input-error" : ""}`}
+                  />
+                  {formErrors.image && (
+                    <label className="label pt-0 pb-1">
+                      <span className="label-text-alt text-error">{formErrors.image}</span>
+                    </label>
+                  )}
+                  <label className="label pt-0 pb-1">
+                    <span className="label-text-alt">Maximum file size: 5MB</span>
+                  </label>
+                </div>
                 {newBook.imagePreview && (
-                  <div className="relative h-12 w-12">
-                    <img
-                      src={newBook.imagePreview}
-                      alt="Book cover preview"
-                      className="h-full w-full rounded object-cover"
-                    />
+                  <div className="avatar">
+                    <div className="w-20 h-24 rounded">
+                      <img
+                        src={newBook.imagePreview}
+                        alt="Book cover preview"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
-              <p className="mt-1 text-sm text-gray-500">
-                Please upload an image for the book cover
-              </p>
             </div>
 
-            <div className="modal-action">
-              <button type="submit" className="btn btn-primary">
-                Add Book
+            <div className="modal-action mt-2">
+              <button 
+                type="submit" 
+                className={`btn btn-primary btn-sm ${isSubmitting ? "loading" : ""}`}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Adding..." : "Add Book"}
               </button>
               <button
                 type="button"
-                className="btn"
+                className="btn btn-sm"
                 onClick={() => {
-                  modalRef.current?.close();
+                  addBookModalRef.current?.close();
                   resetForm();
                 }}
+                disabled={isSubmitting}
               >
                 Cancel
               </button>
             </div>
           </form>
         </div>
+        <form method="dialog" className="modal-backdrop">
+          <button onClick={resetForm}>close</button>
+        </form>
+      </dialog>
+
+    
+      <dialog ref={editProfileModalRef} className="modal">
+        <div className="modal-box bg-base-100">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          </form>
+          <h3 className="font-bold text-xl mb-2">Edit Profile</h3>
+          <div className="divider"></div>
+          <div className="py-4 flex flex-col items-center justify-center">
+            <div className="avatar mb-4">
+              <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <img src={pp} alt="User avatar" />
+              </div>
+            </div>
+            <p className="text-center mb-6">This feature is coming soon!</p>
+            <progress className="progress progress-primary w-56"></progress>
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
       </dialog>
     </div>
   );
