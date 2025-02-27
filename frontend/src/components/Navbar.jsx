@@ -39,7 +39,7 @@ const Navbar = () => {
                       <small>Join different clubs</small>
                      </button>
                      <button className="w-full font-urbanist hover:bg-gray-200">
-                      Book Collections
+                      Book Cluster
                       <small>A collection of books</small>
                      </button>
                       
@@ -74,11 +74,10 @@ const Navbar = () => {
           
           <div className="dropdown dropdown-end relative">
             <div className="flex items-center">
-              <p className="mr-2 ml-4 font-semibold">{user.username}</p>
               <img
                 src={profile}
                 alt="Profile"
-                className="w-10 h-10 rounded-full overflow-hidden object-cover mr-3"
+                className="w-10 h-10 rounded-full overflow-hidden object-cover mr-3 ml-5"
               />
               <div className="flex items-center cursor-pointer" tabIndex="0">
                 <svg

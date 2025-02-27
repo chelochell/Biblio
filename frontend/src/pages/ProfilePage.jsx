@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useBookStore } from "../store/book";
 import axios from "axios";
+import pp from "../images/pp.jpg";
+import Navbar from "../components/Navbar";
+import { useAuthStore } from "../store/authStore";
 
 const ProfilePage = () => {
   const modalRef = useRef(null);
+  const { user } = useAuthStore();
   const [newBook, setNewBook] = useState({
     title: "",
     author: "",
@@ -12,7 +16,7 @@ const ProfilePage = () => {
     reviews: "",
     status: "",
     image: null,
-    imagePreview: null
+    imagePreview: null,
   });
 
   const { createBook, books, fetchBook } = useBookStore();
@@ -30,66 +34,65 @@ const ProfilePage = () => {
       reviews: "",
       status: "",
       image: null,
-      imagePreview: null
+      imagePreview: null,
     });
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setNewBook(prev => ({
+      setNewBook((prev) => ({
         ...prev,
         image: file,
-        imagePreview: URL.createObjectURL(file)
+        imagePreview: URL.createObjectURL(file),
       }));
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewBook(prev => ({
+    setNewBook((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleAddBook = async (e) => {
     e.preventDefault();
-    
+
     if (!newBook.image) {
       alert("Please select a book cover image");
       return;
     }
 
-    
     const formData = new FormData();
     formData.append("file", newBook.image);
 
     try {
-      
-      const uploadRes = await axios.post("http://localhost:5000/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const uploadRes = await axios.post(
+        "http://localhost:5000/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (!uploadRes.data.success) {
         alert("Failed to upload image: " + uploadRes.data.message);
         return;
       }
 
-      
       console.log("Upload response:", uploadRes.data);
 
-      
       const imageUrl = uploadRes.data.fileUrl;
       if (!imageUrl) {
-        console.error('Upload response:', uploadRes.data);
+        console.error("Upload response:", uploadRes.data);
         alert("Failed to get image URL from upload response");
         return;
       }
 
-      
       const bookData = {
         title: newBook.title,
         author: newBook.author,
@@ -97,17 +100,16 @@ const ProfilePage = () => {
         genre: newBook.genre,
         reviews: newBook.reviews,
         status: newBook.status,
-        image: imageUrl
+        image: imageUrl,
       };
 
-      
       const { success, message } = await createBook(bookData);
-      
+
       if (success) {
         modalRef.current?.close();
         resetForm();
         alert("Book added successfully!");
-        await fetchBook(); 
+        await fetchBook();
       } else {
         alert(message);
       }
@@ -119,31 +121,57 @@ const ProfilePage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold mb-2">Fretchel Gerarman</h1>
-        <p className="text-gray-600">Book Collection</p>
+      <Navbar />
+      <div className="mb-8 text-center justify-center items-center flex flex-col font-urbanist mt-24">
+        <img src={pp} alt="" className="w-24 h-24 rounded-full" />
+        <h1 className="text-3xl font-bold mb-2 mt-6 ">{user.username}</h1>
+        <p className="text-[#526C03]">Book Cluster</p>
+        <div className="mt-6">
+          <button className="bg-[#292229] text-white px-4 py-2 rounded-2xl hover:bg-[#526C03] hover:text-white transition-all duration-300">
+            Edit Profile
+          </button>
+        </div>
       </div>
 
-      <div role="tablist" className="tabs tabs-bordered mb-6">
+      <div
+        role="tablist"
+        className="tabs tabs-bordered mb-6 justify-center items-center"
+      >
         <input
           type="radio"
           name="my_tabs_1"
           role="tab"
           className="tab"
-          aria-label="My Collection"
+          aria-label="Collection"
           defaultChecked
         />
-        <div role="tabpanel" className="tab-content p-4">
+
+        <div role="tabpanel" className="tab-content p-4" >
           <div className="flex justify-end mb-4">
             <button
-              className="btn btn-primary"
+              className="bg-[#292229] rounded-full"
               onClick={() => modalRef.current?.showModal()}
             >
-              Add New Book
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+                color="white"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* BOOKS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-center ">
             {books.map((book) => (
               <div key={book._id} className="card bg-base-100 shadow-xl">
                 <figure className="px-4 pt-4">
@@ -176,7 +204,6 @@ const ProfilePage = () => {
         />
         <div role="tabpanel" className="tab-content p-4">
           <h2 className="text-2xl font-bold mb-4">Reading Statistics</h2>
-          {/* Add your reading statistics content here */}
         </div>
 
         <input
@@ -188,14 +215,15 @@ const ProfilePage = () => {
         />
         <div role="tabpanel" className="tab-content p-4">
           <h2 className="text-2xl font-bold mb-4">Profile Settings</h2>
-          {/* Add your settings content here */}
         </div>
       </div>
 
       <dialog ref={modalRef} className="modal">
-        <div className="modal-box w-11/12 max-w-5xl">
+        <div className="w-11/11 max-w-5xl">
           <h3 className="font-bold text-lg">Add a New Book</h3>
-          <p className="py-4">Keep track of your reads with a new collection.</p>
+          <p className="py-4">
+            Keep track of your reads with a new collection.
+          </p>
 
           <form onSubmit={handleAddBook} className="space-y-4">
             <div>
