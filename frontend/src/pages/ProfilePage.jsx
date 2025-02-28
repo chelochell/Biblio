@@ -186,6 +186,7 @@ const ProfilePage = () => {
           >
             Edit Profile
           </button>
+          <p>test 2</p>
         </div>
       </div>
 
@@ -531,7 +532,7 @@ const ProfilePage = () => {
                 )}
               </div>
             </div>
-<p>test</p>
+
             <div className="modal-action mt-2">
               <button 
                 type="submit" 
