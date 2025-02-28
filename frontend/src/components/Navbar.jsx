@@ -1,119 +1,133 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import profile from "../images/profile.jpg";
 import { useAuthStore } from "../store/authStore";
 import logo from "../images/logo.svg";
 
 const Navbar = () => {
-  const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const { user, logout } = useAuthStore();
+  const createClusterModalRef = useRef(null);
   const handleLogout = () => {
     logout();
   };
+  
   return (
-    <>
-      <div className="navbar-center px-10 py-3 fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
-        <nav className="flex items-center">
-          <div className="font-bold text-xl text-black fontFamily-lexend">
-            <Link to='/'><img src={logo} alt="logo" className="h-7"/></Link>
-            
-          </div>
-
-          <div className="flex-1 flex justify-end">
-            <ul className="menu menu-horizontal bg-base-100 rounded-box fontFamily-lexend font-weight-regular">
-              <li>
-                <Link to="/discover">Discover</Link>
-              </li>
-              <li>
-                <div className="flex items-center relative" tabIndex="0">
-                  <button className="hover:bg-gray-200" onClick={() => setDropdownOpen(!dropdownOpen)}>
-                    Create
-
-                    {dropdownOpen && (
-                    <div
-                      tabIndex="0"
-                      className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 absolute left-1/2 transform -translate-x-1/2 top-full mt-8 z-50"
-                    >
-                     <button className="w-full font-urbanist hover:bg-gray-200">
-                      Create Club
-                      <small>Join different clubs</small>
-                     </button>
-                     <button className="w-full font-urbanist hover:bg-gray-200">
-                      Book Cluster
-                      <small>A collection of books</small>
-                     </button>
-                      
-                    </div>
-                  )}
+    <div className="navbar bg-base-100 shadow-sm fixed top-0 left-0 right-0 px-4 z-50">
+    
+      <div className="navbar-start">
+        <Link to="/" className="font-bold text-xl text-black font-lexend">
+          <img src={logo} alt="logo" className="h-7" />
+        </Link>
+      </div>
+      
+     
+      <div className="navbar-center hidden lg:flex">
+        <ul className="menu menu-horizontal px-1 font-lexend">
+          <li><Link to="/discover">Discover</Link></li>
+          <li>
+            <details>
+              <summary>Create</summary>
+              <ul className="p-2 bg-base-100 rounded-t-none w-48">
+                <li>
+                  <button to="/create-club" className="flex flex-col items-start" onClick={() => createClusterModalRef.current?.showModal()}>
+                    <span>Create Club</span>
+                    <span className="text-xs opacity-70">Join different clubs</span>
                   </button>
-                  
-                </div>
-              </li>
-            </ul>
-          </div>
+                </li>
+                <li>
+                  <Link to="/book-cluster" className="flex flex-col items-start">
+                    <span>Book Cluster</span>
+                    <span className="text-xs opacity-70">A collection of books</span>
+                  </Link>
+                </li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </div>
 
-          <Link to="/saved">
+     
+      <dialog ref={createClusterModalRef} className="modal">
+        <form method="dialog" className="modal-box">
+          <button 
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" 
+            onClick={() => createClusterModalRef.current?.close()}
+          >
+            ✕
+          </button>
+          <div className="form-control justify-center items-center">
+            <h3 className="font-bold text-lg">New Cluster</h3>
+            <p className="py-4">A collection of elements</p>
+            <input type="text" placeholder="Cluster Name" className="mx-6 h-16 w-full px-6 bg-stone-200 rounded-3xl focus:outline-none" />
+          </div>
+          {/* <div className="form-control mt-4">
+            <select className="select select-bordered">
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+            </select>
+          </div> */}
+          <div className="modal-action">
+            <button className="mx-6 h-16 w-full px-6 bg-stone-200 rounded-3xl">Create</button>
+          </div>
+        </form>
+      </dialog>
+      
+     
+      <div className="navbar-end">
+        <Link to="/saved" className="btn btn-ghost btn-circle">
           <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-            class="size-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-5 h-5"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
             />
           </svg>
-          </Link>
-         
-            
-
-          
-          <div className="dropdown dropdown-end relative">
-            <div className="flex items-center">
-              <img
-                src={profile}
-                alt="Profile"
-                className="w-10 h-10 rounded-full overflow-hidden object-cover mr-3 ml-5"
-              />
-              <div className="flex items-center cursor-pointer" tabIndex="0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="size-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                  />
-                </svg>
-              </div>
+        </Link>
+        
+        <div className="dropdown dropdown-end ml-2">
+          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+            <div className="w-10 rounded-full">
+              <img src={profile} alt="Profile" className="object-cover" />
             </div>
-            <ul
-              tabIndex="0"
-              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 absolute right-0 top-full mt-8 z-50"
-            >
-              <li>
-                <Link to="/profile">Profile</Link>
-              </li>
-              <li>
-                <Link to="/settings">Settings</Link>
-              </li>
-              <li onClick={handleLogout}>
-                <Link to="/auth/login">Log out</Link>
-              </li>
-            </ul>
-          </div>
-        </nav>
+          </label>
+          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-50">
+            <li><Link to="/profile">Profile</Link></li>
+            <li><Link to="/settings">Settings</Link></li>
+            <li onClick={handleLogout}><Link to="/auth/login">Log out</Link></li>
+          </ul>
+        </div>
       </div>
-    </>
+      
+      
+      <div className="navbar-end lg:hidden">
+        <div className="dropdown dropdown-end">
+          <label tabIndex={0} className="btn btn-ghost lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
+            </svg>
+          </label>
+          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+            <li><Link to="/discover">Discover</Link></li>
+            <li>
+              <details>
+                <summary>Create</summary>
+                <ul className="p-2">
+                  <li><Link to="/create-club">Create Club</Link></li>
+                  <li><Link to="/book-cluster">Book Cluster</Link></li>
+                </ul>
+              </details>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 };
 

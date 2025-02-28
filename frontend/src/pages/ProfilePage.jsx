@@ -186,6 +186,7 @@ const ProfilePage = () => {
           >
             Edit Profile
           </button>
+          <p>test 2</p>
         </div>
       </div>
 
