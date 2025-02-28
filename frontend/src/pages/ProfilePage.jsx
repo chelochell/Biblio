@@ -531,7 +531,7 @@ const ProfilePage = () => {
                 )}
               </div>
             </div>
-
+<p>test</p>
             <div className="modal-action mt-2">
               <button 
                 type="submit" 
