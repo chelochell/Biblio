@@ -56,22 +56,15 @@ const Navbar = () => {
             ✕
           </button>
           <div className="form-control justify-center items-center">
-            <h3 className="font-bold text-lg">New Cluster</h3>
-            <p className="py-4">A collection of elements</p>
-            <input type="text" placeholder="Cluster Name" className="mx-6 h-16 w-full px-6 bg-stone-200 rounded-3xl focus:outline-none" />
+            <h3 className="text-2xl font-cormorant-garamond font-bold ">New Cluster</h3>
+            <p className="font-urbanist font-semibold text-gray-600 mb-8">A collection of elements</p>
+            <input type="text" placeholder="Cluster Name" className="mx-12 h-16 w-full px-6 bg-stone-200 rounded-3xl focus:outline-none" />
           </div>
-          {/* <div className="form-control mt-4">
-            <select className="select select-bordered">
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-            </select>
-          </div> */}
-          <div className="modal-action">
-            <button className="mx-6 h-16 w-full px-6 bg-stone-200 rounded-3xl">Create</button>
+          <div className="modal-action justify-center items-center">
+            <button className="h-16 w-full px-6 bg-[#292229] text-white rounded-3xl">Create</button>
           </div>
         </form>
       </dialog>
-      
      
       <div className="navbar-end">
         <Link to="/saved" className="btn btn-ghost btn-circle">
