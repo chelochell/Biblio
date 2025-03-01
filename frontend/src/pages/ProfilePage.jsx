@@ -4,11 +4,22 @@ import axios from "axios";
 import pp from "../images/pp.jpg";
 import Navbar from "../components/Navbar";
 import { useAuthStore } from "../store/authStore";
-
+import { useClusterStore } from "../store/cluster";
+import { Link } from "react-router-dom";
 const ProfilePage = () => {
+  const { user } = useAuthStore();
+  const { clusters, fetchClusters, createCluster } = useClusterStore();
+
+  useEffect(() => {
+   
+    if(user){
+      fetchClusters(user._id);
+    }
+  }, [user]);
+  console.log(clusters);
   const addBookModalRef = useRef(null);
   const editProfileModalRef = useRef(null);
-  const { user } = useAuthStore();
+ 
   const [activeTab, setActiveTab] = useState("Collection");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState({});
@@ -23,7 +34,7 @@ const ProfilePage = () => {
     imagePreview: null,
   });
 
-  const { createBook, books, fetchBook } = useBookStore();
+  const { createBook, books, fetchBook, deleteBook } = useBookStore();
 
   useEffect(() => {
     fetchBook();
@@ -186,7 +197,7 @@ const ProfilePage = () => {
           >
             Edit Profile
           </button>
-          <p>test 2</p>
+        
         </div>
       </div>
 
@@ -237,7 +248,7 @@ const ProfilePage = () => {
               <div>
                 <div className="flex justify-end mb-4">
                   <button
-                    className="btn btn-primary btn-circle"
+                    className="btn btn-circle"
                     onClick={() => addBookModalRef.current?.showModal()}
                     aria-label="Add new book"
                     title="Add new book"
@@ -257,6 +268,28 @@ const ProfilePage = () => {
                       />
                     </svg>
                   </button>
+                </div>
+
+                <div>
+                  {clusters && clusters.length > 0 ? (
+                    <div className="flex flex-col gap-4">
+                      {clusters.map((cluster) => (
+                        <Link 
+                          to={{
+                            pathname: `/cluster/${cluster._id}`,
+                            params: { clusterId: cluster._id },
+                           
+                          }} 
+                          key={cluster._id} 
+                          className="bg-red-500"
+                        >
+                          {cluster.name}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No clusters found</p>
+                  )}
                 </div>
 
                 {books.length === 0 ? (
@@ -306,6 +339,7 @@ const ProfilePage = () => {
                           <div className="card-actions justify-between mt-2">
                             <div className="badge badge-primary">{book.genre}</div>
                             <div className="badge badge-secondary">{book.status}</div>
+                            <div className="cursor-pointer" onClick={() => deleteBook(book._id)}>delete</div>
                           </div>
                         </div>
                       </div>
@@ -536,7 +570,7 @@ const ProfilePage = () => {
             <div className="modal-action mt-2">
               <button 
                 type="submit" 
-                className={`btn btn-primary btn-sm ${isSubmitting ? "loading" : ""}`}
+                className={`btn  btn-sm ${isSubmitting ? "loading" : ""}`}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Adding..." : "Add Book"}
@@ -574,8 +608,8 @@ const ProfilePage = () => {
                 <img src={pp} alt="User avatar" />
               </div>
             </div>
-            <p className="text-center mb-6">This feature is coming soon!</p>
-            <progress className="progress progress-primary w-56"></progress>
+            <p className="text-center mb-6">editt</p>
+            
           </div>
           <div className="modal-action">
             <form method="dialog">

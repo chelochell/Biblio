@@ -1,26 +1,66 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import profile from "../images/profile.jpg";
 import { useAuthStore } from "../store/authStore";
 import logo from "../images/logo.svg";
+import { useClusterStore } from "../store/cluster";
 
 const Navbar = () => {
-  const { user, logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
   const createClusterModalRef = useRef(null);
+  const { fetchClusters, createCluster } = useClusterStore();
+  const [newCluster, setNewCluster] = useState({ name: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+
   const handleLogout = () => {
     logout();
   };
-  
+
+  useEffect(() => {
+    fetchClusters();
+  }, [fetchClusters]);
+
+  const resetForm = () => {
+    setNewCluster({
+      name: ""
+    });
+  };
+
+  const handleClusterSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const ClusterData = {
+      name: newCluster.name,
+      userId: user._id,
+
+    };
+
+    try {
+      const { success, message } = await createCluster(ClusterData);
+
+      if (success) {
+        createClusterModalRef.current?.close();
+        resetForm();
+      } else {
+        setFormErrors({ submit: message });
+      }
+    } catch (error) {
+      setFormErrors({ submit: "Failed to create cluster." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="navbar bg-base-100 shadow-sm fixed top-0 left-0 right-0 px-4 z-50">
-    
       <div className="navbar-start">
         <Link to="/" className="font-bold text-xl text-black font-lexend">
           <img src={logo} alt="logo" className="h-7" />
         </Link>
       </div>
-      
-     
+
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 font-lexend">
           <li><Link to="/discover">Discover</Link></li>
@@ -46,9 +86,8 @@ const Navbar = () => {
         </ul>
       </div>
 
-     
       <dialog ref={createClusterModalRef} className="modal">
-        <form method="dialog" className="modal-box">
+        <form method="dialog" className="modal-box" onSubmit={handleClusterSubmit}>
           <button 
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" 
             onClick={() => createClusterModalRef.current?.close()}
@@ -58,14 +97,22 @@ const Navbar = () => {
           <div className="form-control justify-center items-center">
             <h3 className="text-2xl font-cormorant-garamond font-bold ">New Cluster</h3>
             <p className="font-urbanist font-semibold text-gray-600 mb-8">A collection of elements</p>
-            <input type="text" placeholder="Cluster Name" className="mx-12 h-16 w-full px-6 bg-stone-200 rounded-3xl focus:outline-none" />
+            <input 
+              type="text" 
+              placeholder="Cluster Name" 
+              className="mx-12 h-16 w-full px-6 bg-stone-200 rounded-3xl focus:outline-none" 
+              value={newCluster.name}
+              onChange={(e) => setNewCluster({ name: e.target.value })}
+            />
           </div>
           <div className="modal-action justify-center items-center">
-            <button className="h-16 w-full px-6 bg-[#292229] text-white rounded-3xl">Create</button>
+            <button className="h-16 w-full px-6 bg-[#292229] text-white rounded-3xl" type="submit" disabled={isSubmitting}>
+              Create
+            </button>
           </div>
         </form>
       </dialog>
-     
+
       <div className="navbar-end">
         <Link to="/saved" className="btn btn-ghost btn-circle">
           <svg
@@ -97,7 +144,6 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
-      
       
       <div className="navbar-end lg:hidden">
         <div className="dropdown dropdown-end">
