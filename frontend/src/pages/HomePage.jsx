@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import bg from "../images/bg.svg";
 import { useBookStore } from "../store/book";
 import Navbar from "../components/Navbar";
 import firstBook from "../images/PopularBoks/firstBook.jpg";
-import authorbg from "../images/authorbg.svg";
+
 
 export const HomePage = () => {
   const { books, fetchBook, popularBooks, fetchPopularBooks } = useBookStore();

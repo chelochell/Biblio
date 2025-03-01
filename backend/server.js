@@ -5,6 +5,7 @@ import bookRouters from "./routes/bookroutes.js";
 import uploadRoutes from "./routes/uploadroutes.js";
 import clubRouter from "./routes/clubroutes.js"
 import authRoutes from "./routes/auth.routes.js"
+import clusterRoutes from "./routes/cluster.routes.js";
 import multer from "multer";
 import path from 'path';
 import cors from 'cors';
@@ -83,6 +84,7 @@ app.use("/api/uploads", uploadRoutes);
 app.use("/api/clubs", clubRouter);
 app.use("/api/auth", authRoutes);
 app.use("/api/popular", popularBookRoutes);
+app.use("/api/clusters", clusterRoutes);
 
 app.listen(PORT, () => {
   connectDB();

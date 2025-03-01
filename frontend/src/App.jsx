@@ -17,6 +17,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import SavedPage from "./pages/SavedPage";
 import CreatePage from "./pages/CreatePage";
 import DiscoverPage from "./pages/DiscoverPage"; // Import DiscoverPage
+import ClusterSubpage from "./pages/ClusterSubpage";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -101,7 +102,8 @@ function App() {
                 <Route path="/Profile" element={<ProfilePage />} />
                 <Route path="/saved" element={<SavedPage />} />
                 <Route path="/create" element={<CreatePage />} />
-                <Route path="/discover" element={<DiscoverPage />} /> {/* Add DiscoverPage route */}
+                <Route path="/discover" element={<DiscoverPage />} /> 
+                <Route path="/cluster/:clusterId" element={<ClusterSubpage />} />
               </Routes>
             </>
           }
