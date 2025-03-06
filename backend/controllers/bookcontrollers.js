@@ -1,35 +1,74 @@
 import Book from "../models/book.model.js";
 import mongoose from "mongoose";
 
-export const getBook = async (req,res) =>{
-
+export const getBook = async (req, res) => {
   try {
-    const books = await Book.find({});
-    res.status(201).json({success: true, data: books})
+    
+    const { clusterId } = req.params;
+    console.log("Getting books for clusterId:", clusterId);
+    
+    if (!clusterId) {
+      return res.status(400).json({ success: false, message: "clusterId is required" });
+    }
+    
+    
+    if (!mongoose.Types.ObjectId.isValid(clusterId)) {
+      return res.status(400).json({ success: false, message: "Invalid clusterId format" });
+    }
+    
+    const books = await Book.find({ clusterId: clusterId });
+    console.log(`Found ${books.length} books for clusterId ${clusterId}`);
+    
+    res.status(200).json({ success: true, data: books });
   } catch (error) {
-    res.status(500).json({success:false, message:"Server Error"})
+    console.error("Error in getBook:", error.message);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 }
 
 export const createBook = async (req, res) => {
-  const book = req.body;
-  
-  
-  if (!book.title || !book.author || !book.description || !book.genre || !book.image) {
-      return res.status(400).json({ 
-          success: false, 
-          message: "Please provide all required fields: title, author, description, genre, and image" 
-      });
-  }
-
-  const newBook = new Book(book);
-  
   try {
-      await newBook.save();
-      res.status(201).json({ success: true, data: newBook });
+   
+    console.log("Request body for book creation:", req.body);
+    
+    
+    const { title, author, description, genre, image, reviews, status, clusterId } = req.body;
+    
+    
+    if (!title || !author || !description || !genre || !image) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Please provide all required fields: title, author, description, genre, and image" 
+      });
+    }
+    
+    
+    if (!clusterId) {
+      return res.status(400).json({
+        success: false,
+        message: "clusterId is required"
+      });
+    }
+    
+    console.log("Creating book with clusterId:", clusterId);
+
+    
+    const newBook = new Book({
+      title,
+      author,
+      description,
+      genre,
+      image,
+      reviews: reviews || "",
+      status,
+      clusterId  
+    });
+    
+    await newBook.save();
+    res.status(201).json({ success: true, data: newBook });
   } catch (error) {
-      console.error("Error in create book:", error.message);
-      res.status(500).json({ success: false, message: "Server Error" });
+    console.error("Error in create book:", error.message);
+    res.status(500).json({ success: false, message: error.message || "Server Error" });
   }
 }
 

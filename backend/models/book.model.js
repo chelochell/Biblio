@@ -10,6 +10,7 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    
     description: {
       type: String,
       required: true,
@@ -44,6 +45,11 @@ const bookSchema = new mongoose.Schema(
     reviews: {
       type: String, 
       default: '',
+    },
+    clusterId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Cluster',
+      required: true,
     },
   },
   {
