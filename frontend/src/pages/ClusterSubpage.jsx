@@ -34,18 +34,9 @@ const ClusterSubpage = () => {
 
       fetchBook(clusterId);
 
-      const fetchClusterDetails = async () => {
-        try {
-          const response = await getClusterById(clusterId);
-          if (response.success) {
-            setClusterDetails(response.data);
-          }
-        } catch (error) {
-          console.error("Error fetching cluster details:", error);
-        }
-      };
+     
 
-      fetchClusterDetails();
+     
     }
   }, [clusterId, fetchBook, getClusterById]);
 
@@ -203,7 +194,7 @@ const ClusterSubpage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <Navbar />
-      <div className="mb-8 text-center mt-24 bg-orange-400 mx-44 h-52">
+      <div className="mb-8 text-center mt-24 bg-red-200 mx-44 h-52">
         <h1 className="text-3xl font-bold mb-2">{clusterDetails?.name}</h1>
       </div>
 
@@ -211,7 +202,7 @@ const ClusterSubpage = () => {
         <div className="w-full max-w-4xl">
           <div className="flex justify-end mb-4">
             <button
-              className="btn btn-primary"
+              className=""
               onClick={() => addBookModalRef.current?.showModal()}
               aria-label="Add new book"
               title="Add new book"
@@ -235,66 +226,48 @@ const ClusterSubpage = () => {
           </div>
 
           {books && books.length === 0 ? (
-            <div className="card bg-base-100 shadow-lg">
-              <div className="card-body text-center">
+            <div className="">
+              <div className="text-center font-urbanist">
                 <h3 className="card-title justify-center text-xl mb-2">
                   No books in this cluster yet
                 </h3>
                 <p className="text-base-content/70 mb-4">
                   Add your first book to start your collection
                 </p>
-                <div className="card-actions justify-center">
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => addBookModalRef.current?.showModal()}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="w-5 h-5 mr-2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 4.5v15m7.5-7.5h-15"
-                      />
-                    </svg>
-                    
-                  </button>
-                </div>
+                
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-4">
               {books &&
                 books.map((book) => (
                   <div
                     key={book._id}
-                    className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+                    className="bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 px-6 flex flex-row"
                   >
-                    <figure className="px-4 pt-4">
-                      <img
-                        src={book.image || "/placeholder-book.png"}
-                        alt={book.title}
-                        className="rounded-xl h-48 w-full object-cover"
-                      />
-                    </figure>
+                    
+                      <div className="h-48 w-max-42 my-6">
+                        <img
+                          src={book.image || "/placeholder-book.png"}
+                          alt={book.title}
+                          className="rounded-xl h-48 w-full object-cover"
+                        />
+                      </div>
+                      
+                 
                     <div className="card-body">
                       <h2 className="card-title">{book.title}</h2>
                       <p className="text-sm text-base-content/70">
                         by {book.author}
                       </p>
-                      <p className="text-sm line-clamp-3">{book.description}</p>
-                      <div className="card-actions justify-between mt-2">
+                      <p className="text-sm">{book.description}</p>
+                      <div>
                         <div className="badge badge-primary">{book.genre}</div>
-                        <div className="badge badge-secondary">
+                        <div className="badge badge-secondary ml-2">
                           {book.status}
                         </div>
                         <button
-                          className="btn btn-sm btn-error"
+                          className="btn btn-sm btn-error ml-2"
                           onClick={() => {
                             deleteBook(book._id);
                             setTimeout(() => fetchBook(clusterId), 500);
@@ -304,6 +277,7 @@ const ClusterSubpage = () => {
                         </button>
                       </div>
                     </div>
+
                   </div>
                 ))}
             </div>
