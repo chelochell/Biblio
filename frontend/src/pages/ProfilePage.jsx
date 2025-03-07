@@ -6,27 +6,102 @@ import Navbar from "../components/Navbar";
 import { useAuthStore } from "../store/authStore";
 import { useClusterStore } from "../store/cluster";
 import { Link } from "react-router-dom";
+
 const ProfilePage = () => {
   const { user } = useAuthStore();
   const { clusters, fetchClusters, createCluster } = useClusterStore();
-
+  const { fetchBook } = useBookStore();
+  
+  // State to keep track of books for each cluster
+  const [clusterBooks, setClusterBooks] = useState({});
+  
   useEffect(() => {
     if (user) {
       fetchClusters(user._id);
     }
-  }, [user]);
-  console.log(clusters);
+  }, [user, fetchClusters]);
+
+  // Fetch books for each cluster when clusters are loaded
+  useEffect(() => {
+    if (clusters && clusters.length > 0) {
+      const fetchBooksForClusters = async () => {
+        const booksData = {};
+        
+        for (const cluster of clusters) {
+          try {
+            const books = await fetchBook(cluster._id);
+            booksData[cluster._id] = books;
+          } catch (error) {
+            console.error(`Error fetching books for cluster ${cluster._id}:`, error);
+            booksData[cluster._id] = [];
+          }
+        }
+        
+        setClusterBooks(booksData);
+      };
+      
+      fetchBooksForClusters();
+    }
+  }, [clusters, fetchBook]);
 
   const editProfileModalRef = useRef(null);
-
   const [activeTab, setActiveTab] = useState("Collection");
+
+  // Function to render up to 3 book cover images for each cluster
+  const renderBookCovers = (cluster) => {
+    const books = clusterBooks[cluster._id] || [];
+    
+    if (!books || books.length === 0) {
+      return (
+        <div className="bg-gray-200 rounded-xl h-48 w-full flex items-center justify-center">
+          <p className="text-gray-500">No books yet</p>
+        </div>
+      );
+    }
+
+    // Take up to 3 books from the cluster
+    const booksToShow = books.slice(0, 3);
+    
+    if (booksToShow.length === 1) {
+      // If there's only one book, show it full width
+      return (
+        <img
+          src={booksToShow[0].image || "/placeholder-book.png"}
+          alt={booksToShow[0].title}
+          className="rounded-xl h-48 w-full object-cover"
+        />
+      );
+    } else {
+      // If there are 2 or 3 books, show them side by side
+      return (
+        <div className="grid grid-cols-3 gap-2 h-48">
+          {booksToShow.map((book, index) => (
+            <img
+              key={book._id || index}
+              src={book.image || "/placeholder-book.png"}
+              alt={book.title}
+              className="rounded-xl h-full w-full object-cover"
+            />
+          ))}
+          
+          {/* Add placeholder divs if less than 3 books */}
+          {Array(3 - booksToShow.length).fill().map((_, index) => (
+            <div 
+              key={`placeholder-${index}`} 
+              className="bg-gray-100 rounded-xl h-full w-full"
+            />
+          ))}
+        </div>
+      );
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <Navbar />
       <div className="mb-8 text-center justify-center items-center flex flex-col font-urbanist mt-24">
         <img src={pp} alt="" className="w-24 h-24 rounded-full object-cover" />
-        <h1 className="text-3xl font-bold mb-2 mt-6 ">{user.username}</h1>
+        <h1 className="text-3xl font-bold mb-2 mt-6 ">{user?.username || "User"}</h1>
         <p className="text-[#526C03]">Book Cluster</p>
         <div className="mt-6">
           <button
@@ -95,19 +170,22 @@ const ProfilePage = () => {
                           className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 p-4"
                         >
                           <div className="card-body">
-                            <h2 className="card-title">{cluster.name}</h2>
+                            
                             <p className="text-gray-600">
                               {cluster.description}
                             </p>
-                            <div className="card-actions justify-end">
-                              <button className="btn btn-primary btn-sm">
-                                View Books
-                              </button>
+                            <div className="mt-3 mb-3">
+                              {renderBookCovers(cluster)}
                             </div>
+                            
                           </div>
+                         
                         </Link>
+                        
                       ))}
+                       
                     </div>
+                    
                   ) : (
                     <div className="card bg-base-100 shadow-lg">
                       <div className="card-body text-center">
@@ -126,7 +204,7 @@ const ProfilePage = () => {
 
             {activeTab === "Clubs" && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">Clubss</h2>
+                <h2 className="text-2xl font-bold mb-4">Clubs</h2>
                 <p>Loveu</p>
               </div>
             )}
