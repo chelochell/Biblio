@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import { useAuthStore } from "../store/authStore";
 const API_URL = "http://localhost:5000/api";
 export const useClusterStore = create((set) => ({
   clusters: [],
@@ -8,6 +9,7 @@ export const useClusterStore = create((set) => ({
 
   // Create cluster
   createCluster: async (clusterData) => {
+    
     try {
       const response = await axios.post(`${API_URL}/clusters`, clusterData, {
         withCredentials: true,
@@ -32,11 +34,20 @@ export const useClusterStore = create((set) => ({
     }
   },
 
-  fetchClusters: async (userId) => {
+  fetchClusters: async () => {
     try {
+      
+      const user = useAuthStore.getState().user;
+      
+      if (!user || !user._id) {
+        console.log("No authenticated user found");
+        set({ clusters: [], clustersLoading: false });
+        return [];
+      }
+
       set({ clustersLoading: true, clustersError: null });
 
-      const response = await axios.get(`${API_URL}/clusters?userId=${userId}`, {
+      const response = await axios.get(`${API_URL}/clusters?userId=${user._id}`, {
         withCredentials: true,
       });
 

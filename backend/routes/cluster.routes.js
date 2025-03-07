@@ -9,4 +9,3 @@ router.delete('/:id', deleteCluster);
 
 export default router;
 
-

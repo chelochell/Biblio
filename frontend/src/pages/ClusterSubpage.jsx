@@ -203,8 +203,8 @@ const ClusterSubpage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <Navbar />
-      <div className="mb-8 text-center mt-24">
-        <h1 className="text-3xl font-bold mb-2"></h1>
+      <div className="mb-8 text-center mt-24 bg-orange-400 mx-44 h-52">
+        <h1 className="text-3xl font-bold mb-2">{clusterDetails?.name}</h1>
       </div>
 
       <div className="flex flex-col items-center">
@@ -230,7 +230,7 @@ const ClusterSubpage = () => {
                   d="M12 4.5v15m7.5-7.5h-15"
                 />
               </svg>
-              Add Book
+             
             </button>
           </div>
 
@@ -262,7 +262,7 @@ const ClusterSubpage = () => {
                         d="M12 4.5v15m7.5-7.5h-15"
                       />
                     </svg>
-                    Add Your First Book
+                    
                   </button>
                 </div>
               </div>
