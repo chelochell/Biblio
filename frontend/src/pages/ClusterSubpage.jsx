@@ -194,7 +194,7 @@ const ClusterSubpage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <Navbar />
-      <div className="mb-8 text-center mt-24 bg-red-200 mx-44 h-52">
+      <div className="mb-8 text-center mt-24 bg-[#064c37] mx-44 h-52 rounded-3xl">
         <h1 className="text-3xl font-bold mb-2">{clusterDetails?.name}</h1>
       </div>
 
@@ -256,7 +256,7 @@ const ClusterSubpage = () => {
                       
                  
                     <div className="card-body">
-                      <h2 className="card-title">{book.title}</h2>
+                      <h2 className="font-cormorant-garamond font-bold text-2xl">{book.title}</h2>
                       <p className="text-sm text-base-content/70">
                         by {book.author}
                       </p>
