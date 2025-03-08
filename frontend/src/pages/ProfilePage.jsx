@@ -48,53 +48,64 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("Collection");
 
   // Function to render up to 3 book cover images for each cluster
-  const renderBookCovers = (cluster) => {
-    const books = clusterBooks[cluster._id] || [];
-    
-    if (!books || books.length === 0) {
-      return (
-        <div className="bg-gray-200 rounded-xl h-48 w-full flex items-center justify-center">
-          <p className="text-gray-500">No books yet</p>
-        </div>
-      );
-    }
+  // Copy just this function and replace your current renderBookCovers function
 
-    // Take up to 3 books from the cluster
-    const booksToShow = books.slice(0, 3);
-    
-    if (booksToShow.length === 1) {
-      // If there's only one book, show it full width
-      return (
+const renderBookCovers = (cluster) => {
+  const books = clusterBooks[cluster._id] || [];
+  
+  if (!books || books.length === 0) {
+    return (
+      <div className="bg-gray-200 rounded-xl h-48 w-full flex items-center justify-center">
+        <p className="text-gray-500">No books yet</p>
+      </div>
+    );
+  }
+
+  // Take up to 3 books from the cluster
+  const booksToShow = books.slice(0, 3);
+  
+  return (
+    <div className="flex h-48 gap-2">
+      {/* Left book - larger, takes about 60% of width */}
+      <div className="w-3/5">
         <img
-          src={booksToShow[0].image || "/placeholder-book.png"}
-          alt={booksToShow[0].title}
-          className="rounded-xl h-48 w-full object-cover"
+          src={booksToShow[0]?.image || "/placeholder-book.png"}
+          alt={booksToShow[0]?.title || "Book cover"}
+          className="rounded-xl h-full w-full object-cover"
         />
-      );
-    } else {
-      // If there are 2 or 3 books, show them side by side
-      return (
-        <div className="grid grid-cols-3 gap-2 h-48">
-          {booksToShow.map((book, index) => (
+      </div>
+      
+      {/* Right column with stacked books - takes about 40% of width */}
+      <div className="w-2/5 flex flex-col gap-2">
+        {/* First book in right column */}
+        <div className="h-1/2">
+          {booksToShow.length > 1 ? (
             <img
-              key={book._id || index}
-              src={book.image || "/placeholder-book.png"}
-              alt={book.title}
+              src={booksToShow[1]?.image || "/placeholder-book.png"}
+              alt={booksToShow[1]?.title || "Book cover"}
               className="rounded-xl h-full w-full object-cover"
             />
-          ))}
-          
-          {/* Add placeholder divs if less than 3 books */}
-          {Array(3 - booksToShow.length).fill().map((_, index) => (
-            <div 
-              key={`placeholder-${index}`} 
-              className="bg-gray-100 rounded-xl h-full w-full"
-            />
-          ))}
+          ) : (
+            <div className="bg-gray-100 rounded-xl h-full w-full"></div>
+          )}
         </div>
-      );
-    }
-  };
+        
+        {/* Second book in right column */}
+        <div className="h-1/2">
+          {booksToShow.length > 2 ? (
+            <img
+              src={booksToShow[2]?.image || "/placeholder-book.png"}
+              alt={booksToShow[2]?.title || "Book cover"}
+              className="rounded-xl h-full w-full object-cover"
+            />
+          ) : (
+            <div className="bg-gray-100 rounded-xl h-full w-full"></div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -169,8 +180,8 @@ const ProfilePage = () => {
                           key={cluster._id}
                           className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 p-4"
                         >
-                          <div className="card-body">
-                            
+                          
+                                                   <div className="card-body">
                             <p className="text-gray-600">
                               {cluster.description}
                             </p>
